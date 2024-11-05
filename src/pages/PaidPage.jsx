@@ -13,7 +13,12 @@ const PaidPage = () => {
     const fetchClientData = async () => {
       if (clientData && clientData._id) {
         try {
-          const response = await fetch(`${backend}api/clientes/${clientData._id}`);
+          // Verificamos si el cliente es de tipo "Mesa" o "Individual"
+          const apiEndpoint = clientData.tipoCliente === 'Mesa'
+            ? `${backend}api/mesas/${clientData._id}`  // API de mesas
+            : `${backend}api/clientes/${clientData._id}`; // API de clientes
+
+          const response = await fetch(apiEndpoint);
           if (response.ok) {
             const data = await response.json();
             setClientDetails(data);
@@ -55,7 +60,9 @@ const PaidPage = () => {
           <hr className="my-2" />
           <div className="flex justify-between items-center font-bold text-xl">
             <span>Total:</span>
-            <span>${clientDetails?.productos.reduce((acc, producto) => acc + producto.valorTotal, 0)}</span>
+            <span>
+              ${clientDetails?.productos.reduce((acc, producto) => acc + producto.valorTotal, 0)}
+            </span>
           </div>
         </div>
       </aside>

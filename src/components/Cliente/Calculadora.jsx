@@ -9,6 +9,7 @@ import ButtonCalculator from "./ButtonCalculator";
 import InvoiceDetail from "../InvoiceDetail";
 
 const backend = import.meta.env.VITE_BUSINESS_BACKEND;
+const localId = localStorage.getItem("localId");
 
 const CalculatorPanel = ({ clientData }) => {
   console.log(clientData);
@@ -112,7 +113,7 @@ const CalculatorPanel = ({ clientData }) => {
             valorTotal: producto.valorTotal,
           })),
           valorTotal: costTotal,
-          localId: clientData.localId,
+          localId: localId,
         }),
       });
 
@@ -145,30 +146,59 @@ const CalculatorPanel = ({ clientData }) => {
 
   const deleteClient = async () => {
     try {
-      const response = await fetch(`${backend}api/clientes/${clientData._id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      // Verificamos si el cliente es de tipo "Mesa" y si está ocupada
+      if (clientData.estado === "Ocupado") {
+        // Si es una mesa ocupada, actualizamos su estado a "Libre"
+        const response = await fetch(`${backend}api/mesas/${clientData._id}`, {
+          method: "PUT", // Usamos PUT porque estamos actualizando el estado
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            estado: "Libre", // Actualizamos el estado de la mesa
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error("Error al eliminar el cliente");
+        if (!response.ok) {
+          throw new Error("Error al actualizar el estado de la mesa");
+        }
+
+        toastBC.current.show({
+          severity: "success",
+          summary: "Mesa Liberada",
+          detail: "La mesa ha sido liberada con éxito.",
+          life: 5000,
+        });
+      } else {
+        // Si es un cliente individual, lo eliminamos
+        const response = await fetch(
+          `${backend}api/clientes/${clientData._id}`,
+          {
+            method: "DELETE", // Eliminamos al cliente
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Error al eliminar el cliente");
+        }
+
+        toastBC.current.show({
+          severity: "success",
+          summary: "Cliente Eliminado",
+          detail: "El cliente ha sido eliminado con éxito.",
+          life: 5000,
+        });
       }
-
-      toastBC.current.show({
-        severity: "success",
-        summary: "Cliente Eliminado",
-        detail: "El cliente ha sido eliminado con éxito.",
-        life: 5000,
-      });
 
       // Aquí puedes agregar cualquier acción adicional, como redirigir al usuario o actualizar el estado
     } catch (error) {
       toastBC.current.show({
         severity: "error",
         summary: "Error",
-        detail: `Ocurrió un error al eliminar el cliente: ${error.message}`,
+        detail: `Ocurrió un error al procesar la solicitud: ${error.message}`,
         life: 5000,
       });
     }

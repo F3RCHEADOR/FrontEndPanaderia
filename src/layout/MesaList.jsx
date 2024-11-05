@@ -19,21 +19,14 @@ const Mesa = ({ mesa, selectedMesa, onMesaClick, actualizarMesas }) => {
       accept: ItemTypes.CLIENT, // Aceptamos solo clientes
       canDrop: () => mesa.estado !== "Ocupado", // No permitir el dropeo si la mesa está ocupada
       drop: async (item) => {
-        console.log("Cliente dropeado en mesa:", mesa.nombre); // Imprimir en consola
-        console.log("Item dropeado:", item); // Ver detalles del item dropeado (cliente)
+        console.log("Cliente dropeado en mesa:", mesa.nombre);
+        console.log("Item dropeado:", item);
 
-        // Verificamos si el cliente ya está en la mesa
-        const clienteExistente = mesa.productos.find(
-          (producto) => producto.clienteId === item.clienteId // Verifica si el cliente ya está en la mesa
-        );
+        // Actualizamos la mesa con los productos del cliente
+        await actualizarMesaConCliente(item);
 
-        if (clienteExistente) {
-          // Si el cliente ya está en la mesa, eliminamos al cliente
-          await eliminarClienteDeMesa(item);
-        } else {
-          // Si el cliente no está, lo agregamos a la mesa
-          await actualizarMesaConCliente(item);
-        }
+        // Eliminamos al cliente de la base de datos
+        await eliminarClienteDeLaBaseDeDatos(item._id);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(), // Si el item está sobre la mesa
@@ -72,46 +65,12 @@ const Mesa = ({ mesa, selectedMesa, onMesaClick, actualizarMesas }) => {
     }
   };
 
-  // Función para eliminar los productos del cliente de la mesa
-  const eliminarClienteDeMesa = async (item) => {
-    try {
-      // Filtrar los productos del cliente para eliminarlos
-      const productosRestantes = mesa.productos.filter(
-        (producto) => producto.clienteId !== item.clienteId // Eliminar los productos del cliente con el `clienteId`
-      );
-
-      // Si no quedan productos en la mesa, marcar la mesa como "libre"
-      const estadoMesa = productosRestantes.length === 0 ? "libre" : "Ocupado";
-
-      // Hacer la solicitud PUT para actualizar la mesa
-      const response = await axios.put(`${backend}api/mesas/${mesa._id}`, {
-        nombre: mesa.nombre, // Nombre de la mesa
-        productos: productosRestantes, // Actualizamos los productos
-        estado: estadoMesa, // El estado de la mesa se actualizará a "libre" si no hay productos
-        imagen: mesa.imagen, // Imagen asociada a la mesa
-        piso: mesa.piso._id, // ID del piso donde está la mesa
-      });
-
-      // Eliminar el cliente de la base de datos
-      await eliminarClienteDeLaBaseDeDatos(item.clienteId);
-
-      // Si la respuesta es exitosa, actualizamos la UI
-      console.log("Cliente eliminado de la mesa:", response.data);
-      actualizarMesas(); // Actualizamos la lista de mesas en el frontend
-      alert("Cliente eliminado de la mesa");
-    } catch (error) {
-      console.error("Error al eliminar cliente de la mesa:", error);
-      alert("Error al eliminar cliente de la mesa");
-    }
-  };
-
   // Función para eliminar al cliente de la base de datos
   const eliminarClienteDeLaBaseDeDatos = async (clienteId) => {
     try {
-      const response = await axios.delete(
-        `${backend}api/clientes/${clienteId}`
-      );
+      const response = await axios.delete(`${backend}api/clientes/${clienteId}`);
       console.log("Cliente eliminado de la base de datos:", response.data);
+      window.location.reload();
     } catch (error) {
       console.error("Error al eliminar el cliente de la base de datos:", error);
       alert("Error al eliminar el cliente de la base de datos");
