@@ -43,16 +43,24 @@ Content-Type: application/json
     "nit" : "8300000"
 }
 ###Obtener Todas las Categorias de un Local
-GET http://localhost:5000/api/categorias/local/6707e96e46c6e33cdd8a322d
+GET http://apipos-production.up.railway.app/api/categorias/local/6707e96e46c6e33cdd8a322d
 Content-Type: application/json
 
 ###Obtener La Informacion de Una Categoria
-GET http://localhost:5000/api/categorias/6719145c221ee1345ff947cd
+GET https://apipos-production.up.railway.app/api/categorias/6719145c221ee1345ff947cd
 Content-Type: application/json
 
 ### Obtener todos los productos de una Categoria específica
-GET http://localhost:5000/api/productos/categoria/67093d9549e3527282fa085a
+GET http://apipos-production.up.railway.app/api/productos/categoria/67093d9549e3527282fa085a
 Content-Type: application/json
+
+###
+PUT http://apipos-production.up.railway.app/api/categorias/6719145c221ee1345ff947cd
+Content-Type: application/json
+
+{
+  "imagen":  "/assets/coffe.png"
+}
 
 ###
 

@@ -57,7 +57,7 @@ const ProductList = () => {
 
     if (activeCategoriaId !== id) {
       try {
-        const response = await fetch(`http://localhost:5000/api/productos/categoria/${id}`);
+        const response = await fetch(`${backend}api/productos/categoria/${id}`);
         const data = await response.json();
         if (Array.isArray(data)) {
           setProductos(data);
