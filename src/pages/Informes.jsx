@@ -142,7 +142,7 @@ const Informes = () => {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4 text-center">Informes</h2>
-      <div className="grid grid-cols-1 gap-4  lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4  md:grid-cols-2">
         <div className="bg-white shadow-md rounded-lg p-4">
           <h3 className="text-lg font-bold mb-2">Ventas del Día</h3>
           <Line data={getVentasPorDia()} />
