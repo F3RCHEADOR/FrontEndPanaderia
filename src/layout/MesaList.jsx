@@ -1,38 +1,129 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDrop } from "react-dnd";
+import axios from "axios";
 import InfoMesa from "../components/infoMesa";
 import Reloj from "../components/Reloj";
-import axios from "axios";
 
+// Definir el tipo de item que aceptamos (CLIENT)
 const ItemTypes = {
-  CLIENT: "client",
+  CLIENT: "client", // Tipo de item que se va a soltar
 };
 
 const backend = import.meta.env.VITE_BUSINESS_BACKEND;
 const localId = localStorage.getItem("localId");
 
-const Mesa = ({ mesa, selectedMesa, onMesaClick }) => {
+const Mesa = ({ mesa, selectedMesa, onMesaClick, actualizarMesas }) => {
+  // Hook de useDrop para manejar el dropeo
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
-      accept: ItemTypes.CLIENT,
-      canDrop: () => mesa.estado !== "Ocupado",
-      drop: (item) => {
-        // Manejar la lógica al soltar un cliente en la mesa
+      accept: ItemTypes.CLIENT, // Aceptamos solo clientes
+      canDrop: () => mesa.estado !== "Ocupado", // No permitir el dropeo si la mesa está ocupada
+      drop: async (item) => {
+        console.log("Cliente dropeado en mesa:", mesa.nombre); // Imprimir en consola
+        console.log("Item dropeado:", item); // Ver detalles del item dropeado (cliente)
+
+        // Verificamos si el cliente ya está en la mesa
+        const clienteExistente = mesa.productos.find(
+          (producto) => producto.clienteId === item.clienteId // Verifica si el cliente ya está en la mesa
+        );
+
+        if (clienteExistente) {
+          // Si el cliente ya está en la mesa, eliminamos al cliente
+          await eliminarClienteDeMesa(item);
+        } else {
+          // Si el cliente no está, lo agregamos a la mesa
+          await actualizarMesaConCliente(item);
+        }
       },
       collect: (monitor) => ({
-        isOver: !!monitor.isOver(),
-        canDrop: monitor.canDrop(),
+        isOver: !!monitor.isOver(), // Si el item está sobre la mesa
+        canDrop: monitor.canDrop(), // Si se puede soltar el item sobre la mesa
       }),
     }),
     [mesa]
   );
+
+  // Función para actualizar la mesa con los productos del cliente
+  const actualizarMesaConCliente = async (item) => {
+    try {
+      // Combinar productos existentes con los nuevos productos del cliente
+      const productosActualizados = [
+        ...mesa.productos, // Mantener los productos que ya están en la mesa
+        ...item.productos, // Agregar los nuevos productos del cliente
+      ];
+
+      // Hacer la solicitud PUT para actualizar la mesa
+      const response = await axios.put(`${backend}api/mesas/${mesa._id}`, {
+        nombre: mesa.nombre, // Nombre de la mesa
+        productos: productosActualizados, // Actualizamos los productos
+        estado: "Ocupado", // El estado de la mesa será "Ocupado"
+        imagen: mesa.imagen, // Imagen asociada a la mesa
+        piso: mesa.piso._id, // ID del piso donde está la mesa
+      });
+
+      // Si la respuesta es exitosa, podemos actualizar la UI de la mesa
+      console.log("Mesa actualizada con cliente:", response.data);
+      onMesaClick(null); // Cerrar la información de la mesa si estaba abierta
+      actualizarMesas(); // Actualizar la lista de mesas en el frontend
+      alert("La mesa se ocupó con éxito");
+    } catch (error) {
+      console.error("Error al actualizar la mesa con cliente:", error);
+      alert("Error al actualizar la mesa con los datos del cliente");
+    }
+  };
+
+  // Función para eliminar los productos del cliente de la mesa
+  const eliminarClienteDeMesa = async (item) => {
+    try {
+      // Filtrar los productos del cliente para eliminarlos
+      const productosRestantes = mesa.productos.filter(
+        (producto) => producto.clienteId !== item.clienteId // Eliminar los productos del cliente con el `clienteId`
+      );
+
+      // Si no quedan productos en la mesa, marcar la mesa como "libre"
+      const estadoMesa = productosRestantes.length === 0 ? "libre" : "Ocupado";
+
+      // Hacer la solicitud PUT para actualizar la mesa
+      const response = await axios.put(`${backend}api/mesas/${mesa._id}`, {
+        nombre: mesa.nombre, // Nombre de la mesa
+        productos: productosRestantes, // Actualizamos los productos
+        estado: estadoMesa, // El estado de la mesa se actualizará a "libre" si no hay productos
+        imagen: mesa.imagen, // Imagen asociada a la mesa
+        piso: mesa.piso._id, // ID del piso donde está la mesa
+      });
+
+      // Eliminar el cliente de la base de datos
+      await eliminarClienteDeLaBaseDeDatos(item.clienteId);
+
+      // Si la respuesta es exitosa, actualizamos la UI
+      console.log("Cliente eliminado de la mesa:", response.data);
+      actualizarMesas(); // Actualizamos la lista de mesas en el frontend
+      alert("Cliente eliminado de la mesa");
+    } catch (error) {
+      console.error("Error al eliminar cliente de la mesa:", error);
+      alert("Error al eliminar cliente de la mesa");
+    }
+  };
+
+  // Función para eliminar al cliente de la base de datos
+  const eliminarClienteDeLaBaseDeDatos = async (clienteId) => {
+    try {
+      const response = await axios.delete(
+        `${backend}api/clientes/${clienteId}`
+      );
+      console.log("Cliente eliminado de la base de datos:", response.data);
+    } catch (error) {
+      console.error("Error al eliminar el cliente de la base de datos:", error);
+      alert("Error al eliminar el cliente de la base de datos");
+    }
+  };
 
   const mesaBackgroundColor =
     mesa.estado === "Ocupado" ? "bg-red-300" : "bg-green-200";
 
   return (
     <div
-      ref={drop}
+      ref={drop} // Aquí se agrega la referencia al drop area
       className={`relative border-2 rounded-xl p-6 h-auto ${mesaBackgroundColor}`}
     >
       <button
@@ -108,6 +199,15 @@ const MesaList = () => {
     setSelectedMesa(selectedMesa === codigo ? null : codigo);
   };
 
+  const actualizarMesas = async () => {
+    try {
+      const mesasResponse = await axios.get(`${backend}api/mesas`);
+      setMesas(mesasResponse.data);
+    } catch (error) {
+      console.error("Error al actualizar las mesas", error);
+    }
+  };
+
   const mesasFiltradas = selectedPiso
     ? mesas.filter((mesa) => mesa.piso._id === selectedPiso)
     : mesas;
@@ -119,7 +219,13 @@ const MesaList = () => {
           <h2 className="text-lg md:text-2xl font-bold text-center">
             Lista de Mesas
           </h2>
-          <p className={`${tipoCaja === 'Cerrada' ? 'bg-red-200' : 'bg-blue-200'} p-0.5 rounded-full font-bold italic`}>Caja {tipoCaja}</p>
+          <p
+            className={`${
+              tipoCaja === "Cerrada" ? "bg-red-200" : "bg-blue-200"
+            } p-0.5 rounded-full font-bold italic`}
+          >
+            Caja {tipoCaja}
+          </p>
         </div>
         <Reloj />
       </div>
@@ -130,24 +236,22 @@ const MesaList = () => {
             onClick={() =>
               setSelectedPiso(piso._id === selectedPiso ? null : piso._id)
             }
-            className={`py-2 px-2 md:px-4 rounded-lg transition-all duration-300 
-              ${
-                selectedPiso === piso._id
-                  ? "bg-green-500 text-white shadow-lg"
-                  : "bg-gray-300 text-gray-800 hover:bg-green-400"
-              }`}
+            className={`py-2 px-2 md:px-4 rounded-lg transition-all duration-300 ${
+              selectedPiso === piso._id
+                ? "bg-green-500 text-white shadow-lg"
+                : "bg-gray-300 text-gray-800 hover:bg-green-400"
+            }`}
           >
             {piso.nombre}
           </button>
         ))}
         <button
           onClick={() => setSelectedPiso(null)}
-          className={`py-2 px-4 rounded-lg transition-all duration-300 
-            ${
-              selectedPiso === null
-                ? "bg-green-500 text-white shadow-lg"
-                : "bg-gray-300 text-gray-800 hover:bg-green-400"
-            }`}
+          className={`py-2 px-4 rounded-lg transition-all duration-300 ${
+            selectedPiso === null
+              ? "bg-green-500 text-white shadow-lg"
+              : "bg-gray-300 text-gray-800 hover:bg-green-400"
+          }`}
         >
           Todos
         </button>
@@ -161,6 +265,7 @@ const MesaList = () => {
             mesa={mesa}
             selectedMesa={selectedMesa}
             onMesaClick={handleMesaClick}
+            actualizarMesas={actualizarMesas}
           />
         ))}
       </div>

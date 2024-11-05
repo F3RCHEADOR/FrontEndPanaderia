@@ -184,7 +184,7 @@ DELETE http://localhost:5000/api/pagos/671bcb5a01f94944127c906c
 GET http://localhost:5000/api/pisos/local/6707e96e46c6e33cdd8a322d?sort=nombre&order=asc
 
 ###
-GET http://localhost:5000/api/mesas/piso/6723a2ebb654466b822867fb
+GET https://apipos-production.up.railway.app/api/mesas/
 
 
 ###
