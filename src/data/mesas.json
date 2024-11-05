@@ -1,0 +1,86 @@
+[
+  {
+    "codigo": "M01",
+    "horaOcupado": "2024-08-04T15:30:00Z",
+    "estado": "Ocupado",
+    "productos": [
+      { "nombre": "Pan de ajo", "precio": 3.5 },
+      { "nombre": "Tarta de manzana", "precio": 4.0 }
+    ],
+    "valorAcumulado": 7.5
+  },
+  {
+    "codigo": "M02",
+    "horaOcupado": "2024-08-04T16:00:00Z",
+    "estado": "Ocupado",
+    "productos": [
+      { "nombre": "Croissant", "precio": 2.5 },
+      { "nombre": "Café", "precio": 1.5 }
+    ],
+    "valorAcumulado": 4.0
+  },
+  {
+    "codigo": "M03",
+    "horaOcupado": "",
+    "estado": "Desocupado",
+    "productos": [],
+    "valorAcumulado": 0
+  },
+  {
+    "codigo": "M04",
+    "horaOcupado": "2024-08-04T17:00:00Z",
+    "estado": "Ocupado",
+    "productos": [
+      { "nombre": "Tarta de queso", "precio": 4.5 },
+      { "nombre": "Limonada", "precio": 2.0 }
+    ],
+    "valorAcumulado": 6.5
+  },
+  {
+    "codigo": "M05",
+    "horaOcupado": "2024-08-04T17:30:00Z",
+    "estado": "Ocupado",
+    "productos": [
+      { "nombre": "Brownie", "precio": 3.0 },
+      { "nombre": "Té helado", "precio": 2.5 }
+    ],
+    "valorAcumulado": 5.5
+  },
+  {
+    "codigo": "M06",
+    "horaOcupado": "",
+    "estado": "Desocupado",
+    "productos": [],
+    "valorAcumulado": 0
+  },
+  {
+    "codigo": "M07",
+    "horaOcupado": "2024-08-04T18:30:00Z",
+    "estado": "Ocupado",
+    "productos": [
+      { "nombre": "Muffin de arándano", "precio": 2.5 },
+      { "nombre": "Chocolate caliente", "precio": 3.0 }
+    ],
+    "valorAcumulado": 5.5
+  },
+  {
+    "codigo": "M08",
+    "horaOcupado": "2024-08-04T19:00:00Z",
+    "estado": "Ocupado",
+    "productos": [
+      { "nombre": "Tarta de limón", "precio": 4.0 },
+      { "nombre": "Agua mineral", "precio": 1.0 }
+    ],
+    "valorAcumulado": 5.0
+  },
+  {
+    "codigo": "M09",
+    "horaOcupado": "2024-08-04T19:30:00Z",
+    "estado": "Ocupado",
+    "productos": [
+      { "nombre": "Panecillo de chocolate", "precio": 2.0 },
+      { "nombre": "Café americano", "precio": 2.5 }
+    ],
+    "valorAcumulado": 4.5
+  }
+]

@@ -1,0 +1,216 @@
+### Iniciar sesión de usuario
+POST http://localhost:5000/api/usuarios/login
+Content-Type: application/json
+
+{
+    "username": "FabianF",
+    "password": "usuario1"
+}
+
+###
+
+
+### Obtener todos los usuarios
+GET http://localhost:5000/api/usuarios/
+Content-Type: application/json
+
+###
+
+
+### Crear un nuevo usuario
+POST http://localhost:5000/api/usuarios/
+Content-Type: application/json
+
+{
+    "username": "FabianF",
+    "password": "usuario1",
+    "role": "admin",
+    "localId": "6707e96e46c6e33cdd8a322d"
+}
+
+###
+
+
+### Eliminar un usuario específico
+DELETE http://localhost:5000/api/usuarios/67166a2446d48b775cb79555
+Content-Type: application/json
+
+###
+PUT http://localhost:5000/api/locales/6707e96e46c6e33cdd8a322d
+Content-Type: application/json
+
+{
+    "nit" : "8300000"
+}
+###Obtener Todas las Categorias de un Local
+GET http://localhost:5000/api/categorias/local/6707e96e46c6e33cdd8a322d
+Content-Type: application/json
+
+###Obtener La Informacion de Una Categoria
+GET http://localhost:5000/api/categorias/6719145c221ee1345ff947cd
+Content-Type: application/json
+
+### Obtener todos los productos de una Categoria específica
+GET http://localhost:5000/api/productos/categoria/67093d9549e3527282fa085a
+Content-Type: application/json
+
+###
+
+
+GET http://localhost:5000/api/productos/local/6707e96e46c6e33cdd8a322d
+Content-Type: application/json
+
+###
+
+### Crear un nuevo producto (ejemplo adicional si lo necesitas)
+POST http://localhost:5000/api/productos/
+Content-Type: application/json
+
+{
+    "nombre": "Pan",
+    "precio": 1.50,
+    "categoriaId": "6707e96e46c6e33cdd8a322d"
+}
+
+###
+
+POST http://localhost:5000/api/clientes/
+Content-Type: application/json
+
+{
+    "nombre": "Juan Pérez",
+    "productos": [
+        {
+            "productoId": "67167d3cefeb256e719c4525",
+            "cantidad": 2,
+            "valorTotal": 8000
+        }
+    ],
+    "localId": "6707e96e46c6e33cdd8a322d"
+}
+
+
+###
+POST http://localhost:5000/api/pagos/
+Content-Type: application/json
+
+{
+  "consecutivo" : 21,
+  "nombre": "Cliente Recurrente",
+  "productos": [
+    {
+      "productoId": "67191471221ee1345ff947d0",
+      "cantidad": 1,
+      "valorTotal": 5000
+    },
+    {
+      "productoId": "67191de7221ee1345ff948a6",
+      "cantidad": 1,
+      "valorTotal": 4000
+    }
+  ],
+  "valorTotal": 9000,
+  "localId": "6707e96e46c6e33cdd8a322d"
+}
+
+###
+GET http://localhost:5000/api/pagos/ultimo-consecutivo
+
+###
+GET http://localhost:5000/api/cajas
+
+###
+GET http://localhost:5000/api/cajas/ultimo-consecutivo
+
+###
+GET http://localhost:5000/api/cajas/ultima-caja
+
+
+
+###
+DELETE http://localhost:5000/api/cajas/671face27f685da29de6c9f4
+
+###
+POST http://localhost:5000/api/cajas
+Content-Type: application/json
+
+{
+  "consecutivo": 4,
+  "tipoCaja": "cierre",
+  "tipoMoneda": [
+    { "valor": "50", "cantidad": 0 },
+    { "valor": "100", "cantidad": 0 },
+    { "valor": "200", "cantidad": 0 },
+    { "valor": "500", "cantidad": 0 },
+    { "valor": "1000", "cantidad": 0 },
+    { "valor": "2000", "cantidad": 3 },
+    { "valor": "5000", "cantidad": 0 },
+    { "valor": "10000", "cantidad": 0 },
+    { "valor": "20000", "cantidad": 0 },
+    { "valor": "50000", "cantidad": 0 },
+    { "valor": "100000", "cantidad": 2 }
+  ],
+  "totalCaja": 206000
+}
+
+###
+GET  http://localhost:5000/api/pagos/local/6707e96e46c6e33cdd8a322d
+
+###
+GET http://localhost:5000/api/pagos/pagoId/671f9ecd0ad40aa22bb89370
+
+###
+GET http://localhost:5000/api/clientes/local/6707e96e46c6e33cdd8a322d
+
+
+###
+GET http://localhost:5000/api/clientes/671bb60ec60aeb78434bcbed
+
+###
+DELETE http://localhost:5000/api/clientes/671bb948c60aeb78434bcc15
+
+###
+DELETE http://localhost:5000/api/pagos/671bcb5a01f94944127c906c
+
+###
+GET http://localhost:5000/api/pisos/local/6707e96e46c6e33cdd8a322d?sort=nombre&order=asc
+
+###
+GET http://localhost:5000/api/mesas/piso/6723a2ebb654466b822867fb
+
+
+###
+GET http://localhost:5000/api/mesas
+
+
+###
+POST http://localhost:5000/api/mesas
+Content-Type: application/json
+
+{
+ "nombre" : "2",
+ "imagen" : "/src/assets/Mesa/barra-de-bar.png",
+ "piso" : "67239e4dd9f33f965991ff09"
+}
+
+###
+DELETE http://localhost:5000/api/mesas/6723ca3dbbd82a0914474d77
+
+###
+GET http://localhost:5000/api/pisos/local/6707e96e46c6e33cdd8a322d
+
+
+###
+GET http://localhost:5000/api/clientes/local/6707e96e46c6e33cdd8a322d
+
+###
+GET http://localhost:5000/api/productos/categoria/6719145c221ee1345ff947cd
+
+###
+GET  http://localhost:5000/api/clientes/6725061b805cd1c51237623e
+
+###
+GET http://localhost:5000/api/clientes/local/6707e96e46c6e33cdd8a322d
+
+###
+GET http://localhost:5000/api/pagos/local/6707e96e46c6e33cdd8a322d
