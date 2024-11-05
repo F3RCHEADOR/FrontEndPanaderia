@@ -317,7 +317,7 @@ const ProductList = () => {
                           ${producto.precio}
                         </span>
                         <span className="text-gray-500 text-center">
-                          ${producto.iva}
+                          %{producto.iva}
                         </span>
                         <button
                           className="bg-red-400 text-center font-bold rounded-lg"
