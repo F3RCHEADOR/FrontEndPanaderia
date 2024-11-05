@@ -156,6 +156,7 @@ const CalculatorPanel = ({ clientData }) => {
           },
           body: JSON.stringify({
             estado: "Libre", // Actualizamos el estado de la mesa
+            productos: [],
           }),
         });
 
