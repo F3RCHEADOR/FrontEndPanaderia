@@ -19,10 +19,15 @@ import ProtectedRoute from "./components/ProtectedRoute"; // Importa el componen
 function App() {
   return (
     <DndProvider backend={HTML5Backend}>
-      <MainLayout>
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" />} />{" "}
-          {/* Redirige a /home */}
+      {/* Rutas públicas */}
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Navigate to="/login" />} /> {/* Redirige a /login */}
+      </Routes>
+
+      {/* Rutas protegidas que requieren MainLayout */}
+      <Routes>
+        <Route element={<MainLayout />}>
           <Route
             path="/second"
             element={
@@ -79,7 +84,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/Informes"
             element={
               <ProtectedRoute>
@@ -87,7 +92,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/MenuVentas"
             element={
               <ProtectedRoute>
@@ -103,9 +108,8 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/Login" element={<Login />} />
-        </Routes>
-      </MainLayout>
+        </Route>
+      </Routes>
     </DndProvider>
   );
 }
