@@ -106,7 +106,7 @@ const Mesa = ({ mesa, selectedMesa, onMesaClick, actualizarMesas }) => {
           mesa.estado === "libre" ? "bg-green-500" : "bg-red-500"
         } rounded-full font-bold text-white capitalize`}
       >
-        {mesa.estado === "libre" ? "Libre" : "Ocupado"}
+        {mesa.estado === "Libre" ? "Libre" : "Ocupado"}
       </div>
     </div>
   );
