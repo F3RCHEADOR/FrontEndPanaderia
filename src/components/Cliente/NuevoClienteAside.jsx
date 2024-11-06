@@ -5,7 +5,6 @@ import { Toast } from 'primereact/toast';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import ButtonPayment from '../Cliente/ButtonPayment';
 
-
 const NuevoClienteAside = ({ isEdit, clientData, productos }) => {
   const backend = import.meta.env.VITE_BUSINESS_BACKEND;
   const localId = localStorage.getItem("localId");
@@ -28,46 +27,91 @@ const NuevoClienteAside = ({ isEdit, clientData, productos }) => {
   };
 
   const total = useMemo(() => calculateTotal(), [productos]);
-  console.log(productos)
 
   const createOrUpdateClient = async () => {
     const cliente = {
       nombre: clientName, // Usamos el nombre ingresado en el input
-      productos: Object.entries(productos).flatMap(([id, { nombre, cantidad }]) => // Asegúrate de incluir el nombre
+      productos: Object.entries(productos).flatMap(([id, { nombre, cantidad }]) => 
         cantidad > 0 ? [{
           productoId: id,
-          nombreProducto: nombre, // Extraemos el nombre del producto
+          nombreProducto: nombre, 
           cantidad,
           valorTotal: productos[id]?.precio * cantidad
         }] : []
       ),
       localId: localId,
-      creado: new Date()
+      creado: new Date(),
     };
 
-    console.log(cliente);
-
     try {
-      const response = await fetch(`${backend}api/clientes`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(cliente)
-      });
+      let response;
 
-      if (response.ok) {
-        const newClient = await response.json();
-        setSavedClient(newClient);
-        toast.current.show({ severity: 'success', summary: 'Cliente Creado', detail: `${newClient.nombre ? newClient.nombre : 'Exitosamente'}`, life: 3000 });
-        setClientName(''); // Reinicia el input
-        setButtonDisabled(true)
+      // Verificamos si `clientData` tiene tipoCliente
+      if (clientData?.tipoCliente) {
+        if (clientData.tipoCliente === "Mesa") {
+          // Si el cliente es de tipo "Mesa", actualizamos la mesa
+          response = await fetch(`${backend}api/mesas/${clientData._id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              ...clientData, // Mantener los datos existentes de la mesa
+              productos: cliente.productos // Actualizamos los productos
+            })
+          });
+
+          if (response.ok) {
+            const updatedMesa = await response.json();
+            setSavedClient(updatedMesa);
+            toast.current.show({ severity: 'success', summary: 'Mesa Actualizada', detail: 'La mesa ha sido actualizada exitosamente', life: 3000 });
+          } else {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar la mesa', life: 3000 });
+          }
+        } else if (clientData.tipoCliente === "Cliente") {
+          // Si el cliente es de tipo "Cliente", actualizamos el cliente
+          response = await fetch(`${backend}api/clientes/${clientData._id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              ...clientData, // Mantener los datos existentes del cliente
+              productos: cliente.productos // Actualizamos los productos
+            })
+          });
+
+          if (response.ok) {
+            const updatedClient = await response.json();
+            setSavedClient(updatedClient);
+            toast.current.show({ severity: 'success', summary: 'Cliente Actualizado', detail: 'El cliente ha sido actualizado exitosamente', life: 3000 });
+          } else {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar el cliente', life: 3000 });
+          }
+        }
       } else {
-        toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el cliente', life: 3000 });
+        // Si no hay `clientData`, creamos un nuevo cliente
+        response = await fetch(`${backend}api/clientes`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(cliente)
+        });
+
+        if (response.ok) {
+          const newClient = await response.json();
+          setSavedClient(newClient);
+          toast.current.show({ severity: 'success', summary: 'Cliente Creado', detail: `Cliente ${newClient.nombre ? newClient.nombre : 'Exitosamente'} creado`, life: 3000 });
+        } else {
+          toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el cliente', life: 3000 });
+        }
       }
+      setClientName(''); // Reinicia el input
+      setButtonDisabled(true); // Deshabilita el botón después de la operación
     } catch (error) {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error en la conexión', life: 3000 });
-      console.error('Error al crear cliente:', error);
+      console.error('Error al crear/actualizar cliente:', error);
     }
   };
 
@@ -117,7 +161,7 @@ const NuevoClienteAside = ({ isEdit, clientData, productos }) => {
           </div>
         </div>
 
-        <div className='w-full mt-auto mb-8'>
+        <div className="w-full mt-auto mb-8">
           {savedClient && <ButtonPayment cliente={savedClient} />}
         </div>
 

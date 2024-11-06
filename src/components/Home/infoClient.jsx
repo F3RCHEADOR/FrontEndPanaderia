@@ -6,6 +6,12 @@ import ButtonEditClient from '../Cliente/ButtonEditClient';
 const ClientInfo = ({ cliente, onClose, onDelete }) => {
   if (!cliente) return null;
 
+  const clienteConTipo = {
+    ...cliente,
+    tipoCliente: 'Cliente', // Puedes cambiar esto si deseas agregar un tipo de cliente específico
+  };
+
+  console.log(cliente)
   // Calcular el valor total acumulado de los productos
   const valorAcumulado = cliente.productos.reduce((total, producto) => total + producto.valorTotal, 0);
 
@@ -26,8 +32,8 @@ const ClientInfo = ({ cliente, onClose, onDelete }) => {
         <span>Total:</span>
         <span>${valorAcumulado}</span>
       </div>
-      <ButtonEditClient cliente={cliente} />
-      <ButtonPayment cliente={cliente} />
+      <ButtonEditClient cliente={clienteConTipo} />
+      <ButtonPayment cliente={clienteConTipo} />
       <button onClick={() => onDelete(cliente._id)} className="mt-2 w-full p-2 bg-red-500 text-white rounded hover:bg-red-600">
         Eliminar Cliente
       </button>

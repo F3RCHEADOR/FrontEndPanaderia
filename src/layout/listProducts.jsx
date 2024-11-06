@@ -18,7 +18,7 @@ const ListProducts = ({ clientData, isEdit }) => {
 
 <NuevoClienteAside isEdit={isEdit} clientData={clientData} productos={cart} />
 
-      <ProductSlider onUpdateCart={handleUpdateCart} />
+      <ProductSlider onUpdateCart={handleUpdateCart} clientData={clientData} />
     </>
   );
 };

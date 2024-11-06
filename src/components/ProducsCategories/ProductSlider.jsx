@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const ProductSlider = ({ onUpdateCart }) => {
+const ProductSlider = ({ onUpdateCart, clientData }) => {
   const backend = import.meta.env.VITE_BUSINESS_BACKEND;
   const localId = localStorage.getItem("localId");
 
@@ -14,7 +14,10 @@ const ProductSlider = ({ onUpdateCart }) => {
   const [activeCategoriaNombre, setActiveCategoriaNombre] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [cantidades, setCantidades] = useState({});
-  const [carrito, setCarrito] = useState({}); // Nuevo estado para el carrito
+  const [carrito, setCarrito] = useState({});
+
+  // Ref para evitar ejecutar el efecto de clientData varias veces
+  const hasProcessedClientData = useRef(false);
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -46,6 +49,34 @@ const ProductSlider = ({ onUpdateCart }) => {
     fetchCategorias();
     fetchAllProductos();
   }, [backend, localId]);
+
+  // Este useEffect actualiza las cantidades basadas en clientData si existe
+  useEffect(() => {
+    if (clientData && clientData.tipoCliente && !hasProcessedClientData.current) {
+      hasProcessedClientData.current = true;
+  
+      // Crea un objeto de cantidades y actualiza el carrito desde clientData
+      const updatedCantidades = {};
+      const updatedCarrito = {};
+  
+      clientData.productos.forEach((producto) => {
+        const productoId = producto.productoId._id || producto.productoId; // Verifica si el productoId es un objeto o un string
+        updatedCantidades[productoId] = producto.cantidad;
+        
+        updatedCarrito[productoId] = {
+          nombre: producto.nombreProducto,
+          precio: producto.productoId.precio || producto.valorTotal,
+          cantidad: producto.cantidad,
+        };
+      });
+  
+      // Actualiza los estados de cantidades y el carrito
+      setCantidades(updatedCantidades);
+      setCarrito(updatedCarrito);
+      onUpdateCart(updatedCarrito); // Envía el carrito completo al componente padre
+    }
+  }, [clientData, onUpdateCart]);
+  
 
   const fetchProductos = async (categoriaId) => {
     try {
@@ -95,11 +126,22 @@ const ProductSlider = ({ onUpdateCart }) => {
 
   const updateCarrito = (id, nombre, precio, cantidad) => {
     setCarrito((prev) => {
-      const newCarrito = { ...prev, [id]: { nombre, precio, cantidad } };
-      onUpdateCart(newCarrito); // Enviar el carrito completo al padre
+      const newCarrito = { ...prev };
+  
+      // Solo actualiza el producto que está cambiando, no sobrescribe los demás
+      if (cantidad > 0) {
+        newCarrito[id] = { nombre, precio, cantidad };
+      } else {
+        // Si la cantidad es 0 o menor, elimina el producto del carrito
+        delete newCarrito[id];
+      }
+  
+      // Enviar el carrito actualizado al componente padre
+      onUpdateCart(newCarrito); 
       return newCarrito;
     });
   };
+  
 
   const sliderSettings = {
     dots: true,
@@ -175,53 +217,56 @@ const ProductSlider = ({ onUpdateCart }) => {
       </Slider>
 
       {activeCategoriaId && (
-  <div className="border-4 p-2 mt-8 rounded">
-    <h2 className="text-base md:text-xl font-semibold mb-4 text-center md:text-left">
-      Productos de la categoría seleccionada: {activeCategoriaNombre}
-    </h2>
-    <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
-      {displayedProductos.filter(producto => producto.categoriaId === activeCategoriaId).map((producto) => (
-        <div key={producto._id} className="p-4 border-4 border-gray-400 rounded-xl">
-          <h3 className="text-lg font-semibold mb-2 text-center">{producto.nombre}</h3>
-          <div className="flex space-x-2 items-center justify-between my-2">
-            <span className="bg-green-300 text-center font-bold">${producto.precio}</span>
-            <div className="flex space-x-2">
-              <button className="px-2.5 py-1 bg-blue-500 text-white rounded" onClick={() => handleIncrement(producto._id, producto.nombre, producto.precio)}>+</button>
-              <span className="font-semibold px-2">{cantidades[producto._id] || 0}</span>
-              <button className="px-2.5 py-1 bg-red-500 text-white rounded" onClick={() => handleDecrement(producto._id, producto.nombre, producto.precio)}>-</button>
-            </div>
+        <div className="border-4 p-2 mt-8 rounded">
+          <h2 className="text-base md:text-xl font-semibold mb-4 text-center md:text-left">
+            Productos de la categoría seleccionada: {activeCategoriaNombre}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
+            {displayedProductos
+              .filter((producto) => producto.categoriaId === activeCategoriaId)
+              .map((producto) => (
+                <div key={producto._id} className="p-4 border-4 border-gray-400 rounded-xl">
+                  <h3 className="text-lg font-semibold mb-2 text-center">{producto.nombre}</h3>
+                  <div className="flex space-x-2 items-center justify-between my-2">
+                    <span className="bg-green-300 text-center font-bold">${producto.precio}</span>
+                    <div className="flex space-x-2">
+                      <button className="px-2.5 py-1 bg-blue-500 text-white rounded" onClick={() => handleIncrement(producto._id, producto.nombre, producto.precio)}>+</button>
+                      <span className="font-semibold px-2">{cantidades[producto._id] || 0}</span>
+                      <button className="px-2.5 py-1 bg-red-500 text-white rounded" onClick={() => handleDecrement(producto._id, producto.nombre, producto.precio)}>-</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
-      ))}
-    </div>
-  </div>
-)}
+      )}
 
-{searchTerm && (
-  <div className="border-4 p-2 mt-4 rounded">
-    <h2 className="text-base md:text-xl font-semibold mb-4">
-      Resultados de la búsqueda: "{searchTerm}"
-    </h2>
-    <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
-      {displayedProductos.filter(producto => 
-        producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-      ).map((producto) => (
-        <div key={producto._id} className="p-4 border-2 rounded-xl">
-          <h3 className="text-lg font-semibold mb-2 text-center">{producto.nombre}</h3>
-          <div className="flex space-x-2 items-center justify-between my-2">
-            <span className="bg-green-300 text-center font-bold">${producto.precio}</span>
-            <div className="flex space-x-2">
-              <button className="px-2.5 py-1 bg-blue-500 text-white rounded" onClick={() => handleIncrement(producto._id, producto.nombre, producto.precio)}>+</button>
-              <span className="font-semibold px-2">{cantidades[producto._id] || 0}</span>
-              <button className="px-2.5 py-1 bg-red-500 text-white rounded" onClick={() => handleDecrement(producto._id, producto.nombre, producto.precio)}>-</button>
-            </div>
+      {searchTerm && (
+        <div className="border-4 p-2 mt-4 rounded">
+          <h2 className="text-base md:text-xl font-semibold mb-4">
+            Resultados de la búsqueda: "{searchTerm}"
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
+            {displayedProductos
+              .filter((producto) =>
+                producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+              .map((producto) => (
+                <div key={producto._id} className="p-4 border-2 rounded-xl">
+                  <h3 className="text-lg font-semibold mb-2 text-center">{producto.nombre}</h3>
+                  <div className="flex space-x-2 items-center justify-between my-2">
+                    <span className="bg-green-300 text-center font-bold">${producto.precio}</span>
+                    <div className="flex space-x-2">
+                      <button className="px-2.5 py-1 bg-blue-500 text-white rounded" onClick={() => handleIncrement(producto._id, producto.nombre, producto.precio)}>+</button>
+                      <span className="font-semibold px-2">{cantidades[producto._id] || 0}</span>
+                      <button className="px-2.5 py-1 bg-red-500 text-white rounded" onClick={() => handleDecrement(producto._id, producto.nombre, producto.precio)}>-</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
-      ))}
-    </div>
-  </div>
-)}
-
+      )}
     </div>
   );
 };
