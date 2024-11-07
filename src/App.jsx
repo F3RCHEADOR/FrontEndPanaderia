@@ -12,6 +12,7 @@ import Informes from "./pages/Informes.jsx";
 import MenuVentas from "./pages/MenuVentas.jsx";
 import Login from "./pages/Login.jsx";
 import ConfigurationPage from "./pages/ConfigurationPage.jsx";
+import PisoPage from "./pages/PisoPage.jsx";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import ProtectedRoute from "./components/ProtectedRoute"; // Importa el componente
@@ -22,7 +23,8 @@ function App() {
       {/* Rutas públicas */}
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Navigate to="/login" />} /> {/* Redirige a /login */}
+        <Route path="/" element={<Navigate to="/login" />} />{" "}
+        {/* Redirige a /login */}
       </Routes>
 
       {/* Rutas protegidas que requieren MainLayout */}
@@ -105,6 +107,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ConfigurationPage />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/PisoPage"
+            element={
+              <ProtectedRoute>
+                <PisoPage />
               </ProtectedRoute>
             }
           />

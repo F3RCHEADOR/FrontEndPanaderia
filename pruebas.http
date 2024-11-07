@@ -227,3 +227,6 @@ GET http://localhost:5000/api/clientes/local/6707e96e46c6e33cdd8a322d
 
 ###
 GET http://localhost:5000/api/pagos/local/6707e96e46c6e33cdd8a322d
+
+###
+GET https://apipos-production.up.railway.app/api/locales/
