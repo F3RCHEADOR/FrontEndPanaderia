@@ -115,13 +115,15 @@ const ConfigurationPage = () => {
           <p className="text-gray-700 text-center">
             Configura usuarios y roles para el sistema aquí.
           </p>
-          <motion.button
-            className="w-full mt-6 py-2 bg-purple-600 text-white rounded-md shadow-lg transform hover:scale-105 hover:bg-purple-700 transition duration-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Configurar
-          </motion.button>
+          <Link to={'/UserPage'}>
+            <motion.button
+              className="w-full mt-6 py-2 bg-purple-600 text-white rounded-md shadow-lg transform hover:scale-105 hover:bg-purple-700 transition duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Configurar
+            </motion.button>
+          </Link>
         </motion.div>
 
         {/* Cuadro 4: Configuración General */}

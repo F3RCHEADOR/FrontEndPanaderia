@@ -3,6 +3,7 @@ import { useDrag } from 'react-dnd';
 import ClientInfo from '../components/Home/infoClient';
 import clienteImagen from "../assets/client.png";
 import axios from 'axios';
+import InfoUser from '../components/Modules/InfoUser';
 
 const backend = import.meta.env.VITE_BUSINESS_BACKEND;
 const localId = localStorage.getItem("localId");
@@ -23,7 +24,7 @@ const Client = ({ cliente, selectedCliente, onClientClick, onDelete }) => {
   return (
     <div
       ref={drag}
-      className={` p-2 md:p-4 w-auto md:w-28 h-auto md:h-32 z-0 font-bold text-gray-700 cursor-pointer bg-white shadow-md rounded mx-auto transition-all ${isDragging ? 'opacity-50' : ''}`}
+      className={` p-2 md:p-4 w-20 md:w-28 h-auto md:h-32 overflow-hidden z-0 font-bold text-gray-700 cursor-pointer bg-white shadow-md rounded mx-auto transition-all ${isDragging ? 'opacity-50' : ''}`}
     >
       <button onClick={() => onClientClick(cliente._id)}>
         <img src={clienteImagen} alt={cliente.codigo} className="w-20 mx-auto transition-all" />
@@ -77,9 +78,10 @@ const ClientList = () => {
   };
 
   return (
-    <div className="fixed overflow-auto p-4 xl:p-6  xl:min-h-screen border-r-4 w-32 xl:w-56">
-      <h1 className="text-2xl font-bold mb-6 text-center">Clientes</h1>
-      <div className="space-y-8 mt-12">
+    <div className="fixed overflow-x-hidden xl:min-h-screen border-r-4 w-32 xl:w-56">
+      <InfoUser />
+      <h1 className="text-2xl font-bold mb-4 mt-1 bg-green-200 text-center overflow-x-auto">Clientes</h1>
+      <div className="space-y-8 mt-12 p-4 xl:p-6 ">
         {clientes.map((cliente) => (
           <Client
             key={cliente._id}
