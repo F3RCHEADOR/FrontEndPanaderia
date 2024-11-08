@@ -5,7 +5,7 @@ import LocalSettingsModal from "../components/LocalConfig/LocalSettingsModal";
 
 import PisoImage from "../assets/piso.png"; // Imagen para el cuadro de "Configurar Pisos"
 import LocalImage from "../assets/equipo-de-usuario.png"; // Imagen para el cuadro de "Configurar Local"
-import UsuariosImage from "../assets/client.png"; // Imagen para el cuadro de "Configurar Usuarios"
+import UsuariosImage from "../assets/grupo.png"; // Imagen para el cuadro de "Configurar Usuarios"
 import GeneralImage from "../assets/client.png"; // Imagen para el cuadro de "Configuración General"
 
 const ConfigurationPage = () => {

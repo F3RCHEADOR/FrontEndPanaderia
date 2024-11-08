@@ -229,4 +229,19 @@ GET http://localhost:5000/api/clientes/local/6707e96e46c6e33cdd8a322d
 GET http://localhost:5000/api/pagos/local/6707e96e46c6e33cdd8a322d
 
 ###
-GET https://apipos-production.up.railway.app/api/locales/
+PUT https://apipos-production.up.railway.app/api/locales/6707e96e46c6e33cdd8a322d
+Content-Type: application/json
+
+{
+  "nombre": "Migas d'Angeles",
+  "nit": "8300000",
+  "planSuscripcion": "Basico",
+  "estado": "Activo",
+  "activo": true,
+  "direccion": "Carrera 8 Calle 6-69 Barrio Centro Piedecuesta", 
+  "telefono": "555-1234",
+  "paginaWeb": "www.MigasDAngeles.com"
+}
+
+###
+GET https://apipos-production.up.railway.app/api/usuarios/local/6707e96e46c6e33cdd8a322d

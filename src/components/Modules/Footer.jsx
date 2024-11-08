@@ -4,6 +4,7 @@ import Home from "../../assets/hogar.png";
 import Inventory from "../../assets/inventory.png";
 import Productos from "../../assets/dairy.png";
 import Cash from "../../assets/money.png";
+import Cuenta from '../../assets/equipo-de-usuario.png';
 import { Link } from "react-router-dom";
 
 function Footer() {
@@ -60,6 +61,12 @@ function Footer() {
             <Link to={"MenuVentas"} className="flex flex-row items-center">
               <img src={Cash} className="size-12" />
               <span className="hidden md:block">Ventas</span>
+            </Link>
+          </li>
+          <li className="border-l-8 pb-1 border-r-8 px-2 hover:scale-105 duration-200">
+            <Link to={"Configuration"} className="flex flex-row items-center">
+              <img src={Cuenta} className="size-12" />
+              <span className="hidden md:block">Cuenta</span>
             </Link>
           </li>
         </ul>

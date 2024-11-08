@@ -1,28 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
 
-// Información inicial del local
-const initialLocalData = {
-  nombre: "Restaurante El Buen Sabor",
-  nit: "123456789",
-  plan: "Premium",
-  estado: "Activo",
-  direccion: "Calle Ficticia 123, Ciudad",
-  telefono: "555-1234",
-  paginaWeb: "www.buensabor.com",
-};
+const backend = import.meta.env.VITE_BUSINESS_BACKEND;
+const localId = localStorage.getItem("localId");
 
 const LocalSettingsModal = ({ isOpen, onClose }) => {
-  const [localData, setLocalData] = useState(initialLocalData);
+  const [localData, setLocalData] = useState({
+    nombre: "",
+    nit: "",
+    planSuscripcion: "",
+    estado: "",
+    direccion: "",
+    telefono: "",
+    paginaWeb: "",
+  });
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Para manejar el estado de carga
+  const [error, setError] = useState(null); // Para manejar errores
+
+  // Efecto para cargar los datos del local al abrir el modal
+  useEffect(() => {
+    if (isOpen && localId) {
+      // Hacer la solicitud GET a la API para obtener los datos del local
+      axios
+        .get(`${backend}api/locales/${localId}`)
+        .then((response) => {
+          setLocalData(response.data);
+        })
+        .catch((error) => {
+          console.error("Error al cargar los datos del local:", error);
+        });
+    }
+  }, [isOpen, localId]); // Solo se ejecuta cuando el modal se abre y localId cambia
 
   const handleEditClick = () => {
     setIsEditing(true); // Activar el modo de edición (abrir modal)
   };
 
   const handleSaveClick = () => {
-    setIsEditing(false); // Guardar los cambios y cerrar el modal
-    // Aquí podrías guardar los datos en algún backend o hacer algo con ellos.
+    setIsLoading(true); // Indicar que estamos enviando la solicitud
+    setError(null); // Limpiar cualquier error previo
+
+    // Realizar la solicitud PUT para actualizar el local
+    axios
+      .put(`${backend}api/locales/${localId}`, localData)
+      .then((response) => {
+        // Si la respuesta es exitosa, podemos cerrar el modal
+        setIsEditing(false);
+        setIsLoading(false);
+        onClose(); // Cerrar el modal
+        alert("Los cambios fueron guardados correctamente."); // Mensaje de éxito (puedes cambiarlo)
+      })
+      .catch((error) => {
+        // Si ocurre un error, lo mostramos
+        setIsLoading(false);
+        setError("Hubo un error al guardar los cambios. Intenta nuevamente.");
+        console.error("Error al guardar los cambios:", error);
+      });
   };
 
   const handleCloseModal = () => {
@@ -54,7 +89,7 @@ const LocalSettingsModal = ({ isOpen, onClose }) => {
               <motion.div className="space-y-4">
                 <motion.h3 className="text-lg font-medium text-teal-600">{localData.nombre}</motion.h3>
                 <motion.p className="text-gray-700">NIT: {localData.nit}</motion.p>
-                <motion.p className="text-gray-700">Plan: {localData.plan}</motion.p>
+                <motion.p className="text-gray-700">Plan: {localData.planSuscripcion}</motion.p>
                 <motion.p className="text-gray-700">Estado: {localData.estado}</motion.p>
                 <motion.p className="text-gray-700">Dirección: {localData.direccion}</motion.p>
                 <motion.p className="text-gray-700">Teléfono: {localData.telefono}</motion.p>
@@ -78,27 +113,34 @@ const LocalSettingsModal = ({ isOpen, onClose }) => {
                   className="w-full p-2 border border-gray-300 rounded-md mb-4"
                   placeholder="Nombre del Local"
                 />
+                
+                {/* Campo NIT deshabilitado */}
                 <motion.input
                   type="text"
                   value={localData.nit}
-                  onChange={(e) => setLocalData({ ...localData, nit: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded-md mb-4"
-                  placeholder="NIT"
+                  disabled
+                  className="w-full p-2 border border-gray-300 rounded-md mb-4 bg-gray-200"
+                  placeholder="NIT (No editable)"
                 />
+                
+                {/* Campo Plan Suscripción deshabilitado */}
                 <motion.input
                   type="text"
-                  value={localData.plan}
-                  onChange={(e) => setLocalData({ ...localData, plan: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded-md mb-4"
-                  placeholder="Plan"
+                  value={localData.planSuscripcion}
+                  disabled
+                  className="w-full p-2 border border-gray-300 rounded-md mb-4 bg-gray-200"
+                  placeholder="Plan (No editable)"
                 />
+                
+                {/* Campo Estado deshabilitado */}
                 <motion.input
                   type="text"
                   value={localData.estado}
-                  onChange={(e) => setLocalData({ ...localData, estado: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded-md mb-4"
-                  placeholder="Estado"
+                  disabled
+                  className="w-full p-2 border border-gray-300 rounded-md mb-4 bg-gray-200"
+                  placeholder="Estado (No editable)"
                 />
+                
                 <motion.input
                   type="text"
                   value={localData.direccion}
@@ -121,14 +163,17 @@ const LocalSettingsModal = ({ isOpen, onClose }) => {
                   placeholder="Página Web"
                 />
 
+                {error && <motion.p className="text-red-600 text-sm">{error}</motion.p>}
+
                 <div className="flex justify-between mt-4">
                   <motion.button
                     onClick={handleSaveClick}
                     className="py-2 px-4 bg-teal-600 text-white rounded-md shadow-lg"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    disabled={isLoading} // Deshabilitar el botón mientras se carga
                   >
-                    Guardar Cambios
+                    {isLoading ? "Guardando..." : "Guardar Cambios"}
                   </motion.button>
                   <motion.button
                     onClick={handleCloseModal}

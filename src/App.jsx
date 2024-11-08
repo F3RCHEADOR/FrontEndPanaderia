@@ -11,6 +11,7 @@ import Ventas from "./pages/Ventas.jsx";
 import Informes from "./pages/Informes.jsx";
 import MenuVentas from "./pages/MenuVentas.jsx";
 import Login from "./pages/Login.jsx";
+import UserPage from "./pages/UsersPage.jsx";
 import ConfigurationPage from "./pages/ConfigurationPage.jsx";
 import PisoPage from "./pages/PisoPage.jsx";
 import { DndProvider } from "react-dnd";
@@ -115,6 +116,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <PisoPage />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/UserPage"
+            element={
+              <ProtectedRoute>
+                <UserPage />
               </ProtectedRoute>
             }
           />
