@@ -11,7 +11,7 @@ const InfoMesa = ({ mesa, onClose }) => {
     tipoCliente: 'Mesa', // Puedes cambiar esto si deseas agregar un tipo de cliente específico
   };
 
-  
+
   console.log(mesa)
 
   // Asegúrate de que la propiedad `productos` exista y es un array
@@ -63,9 +63,13 @@ const InfoMesa = ({ mesa, onClose }) => {
           <li>No hay productos</li>
         )}
       </ul>
+      {valorAcumulado !== 0 && (
+        <>
+          <ButtonEditClient cliente={clienteConTipo} />
+          <ButtonPayment cliente={clienteConTipo} />
+        </>
+      )}
 
-      <ButtonEditClient cliente={clienteConTipo} />
-      <ButtonPayment cliente={clienteConTipo} />
     </div>
   );
 };

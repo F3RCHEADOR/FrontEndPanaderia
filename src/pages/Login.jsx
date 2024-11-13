@@ -16,12 +16,15 @@ const Login = () => {
 
     useEffect(() => {
         localStorage.removeItem('token');
+        localStorage.removeItem('localId');
+        localStorage.removeItem('role');
+        localStorage.removeItem('username');
     }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-    
+
         try {
             const response = await axios.post(backend + 'api/usuarios/login', {
                 username,
@@ -30,9 +33,11 @@ const Login = () => {
 
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('localId', response.data.localId);
-    
+            localStorage.setItem('role', response.data.role);
+            localStorage.setItem('username', response.data.username);
+
             toast.current.show({ severity: "success", summary: 'Sesión Iniciada Con Éxito', life: 3000 });
-    
+
             setTimeout(() => {
                 navigate('/home');
             }, 2000);
@@ -45,7 +50,7 @@ const Login = () => {
             }
         }
     };
-    
+
     return (
         <>
             <Toast ref={toast} />
