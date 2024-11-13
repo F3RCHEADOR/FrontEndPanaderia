@@ -243,5 +243,9 @@ Content-Type: application/json
   "paginaWeb": "www.MigasDAngeles.com"
 }
 
+
 ###
-GET https://apipos-production.up.railway.app/api/usuarios/local/6707e96e46c6e33cdd8a322d
+GET https://apipos-production.up.railway.app/api/cajas
+
+
+###
