@@ -7,6 +7,7 @@ import Ventas from "../../assets/ventas.png";
 import { Link } from "react-router-dom";
 
 const backend = import.meta.env.VITE_BUSINESS_BACKEND;
+const localId = localStorage.getItem("localId");
 
 function Caja() {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
@@ -16,7 +17,7 @@ function Caja() {
   useEffect(() => {
     const obtenerEstadoCaja = async () => {
       try {
-        const response = await fetch(`${backend}api/cajas/ultima-caja`);
+        const response = await fetch(`${backend}api/cajas/local/${localId}/ultima`);
         if (!response.ok)
           throw new Error("Error al obtener el estado de la caja");
 

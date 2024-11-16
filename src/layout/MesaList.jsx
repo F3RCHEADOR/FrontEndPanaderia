@@ -56,9 +56,8 @@ const Mesa = ({ mesa, selectedMesa, onMesaClick, actualizarMesas }) => {
 
       // Si la respuesta es exitosa, podemos actualizar la UI de la mesa
       console.log("Mesa actualizada con cliente:", response.data);
-      onMesaClick(null); // Cerrar la información de la mesa si estaba abierta
-      actualizarMesas(); // Actualizar la lista de mesas en el frontend
-      alert("La mesa se ocupó con éxito");
+      onMesaClick(null); 
+      actualizarMesas();
     } catch (error) {
       console.error("Error al actualizar la mesa con cliente:", error);
       alert("Error al actualizar la mesa con los datos del cliente");
@@ -138,7 +137,7 @@ const MesaList = () => {
 
     const fetchData = async () => {
       try {
-        const mesasResponse = await axios.get(`${backend}api/mesas`);
+        const mesasResponse = await axios.get(`${backend}api/mesas/local/${localId}`);
         setMesas(mesasResponse.data);
 
         const pisosResponse = await axios.get(

@@ -245,7 +245,36 @@ Content-Type: application/json
 
 
 ###
-GET https://apipos-production.up.railway.app/api/cajas
+GET https://apipos-production.up.railway.app/api/locales
 
 
+###
+
+POST https://apipos-production.up.railway.app/api/locales/
+Content-Type: application/json
+
+{
+  "nombre": "El Nuevo Amanacer",
+  "nit": "8300040",
+  "planSuscripcion": "Basico",
+  "estado": "Activo",
+  "activo": true,
+  "direccion": "Bucaramanga", 
+  "telefono": "5525-1234",
+  "paginaWeb": "."
+}
+
+###
+POST https://apipos-production.up.railway.app/api/usuarios/
+Content-Type: application/json
+
+{
+    "username": "DiegoF",
+    "password": "usuario1",
+    "role": "admin",
+    "localId": "6734d403de026b16e6cdf110"
+}
+
+###
+GET http://localhost:5000/api/cajas/local/6734d403de026b16e6cdf110
 ###

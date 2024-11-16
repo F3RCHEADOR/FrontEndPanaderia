@@ -8,6 +8,8 @@ import InvoiceCaja from '../components/InvoiceCaja.jsx';
 function ContadorBilletes() {
   const toast = useRef(null);
   const backend = import.meta.env.VITE_BUSINESS_BACKEND;
+  const localId = localStorage.getItem("localId");
+
   const [billetes, setBilletes] = useState({
     100000: 0,
     50000: 0,
@@ -32,7 +34,7 @@ function ContadorBilletes() {
 
   const verificarEstadoCaja = async () => {
     try {
-      const response = await fetch(`${backend}api/cajas`);
+      const response = await fetch(`${backend}api/cajas/local/${localId}`);
       if (!response.ok) throw new Error('Error al obtener el estado de la caja');
 
       const data = await response.json();
@@ -81,58 +83,83 @@ function ContadorBilletes() {
   const mensaje = tipoCaja === 'apertura' ? 'Abrir Caja' : 'Cerrar Caja';
 
   const confirmarCaja = async () => {
+    // Confirma si el usuario quiere realizar la acción
     if (confirm('¿Estás seguro de realizar esta acción?')) {
       try {
+        // Verificar si se ha seleccionado el tipo de caja
         if (!tipoCaja) {
           alert('No se pudo determinar el tipo de caja');
           return;
         }
-        // Obtener el último consecutivo
-        const consecutivoResponse = await fetch(backend + 'api/cajas/ultimo-consecutivo'); // Ajusta la URL según tu API
+
+        // Obtener el último consecutivo para el local
+        console.log('Solicitando el último consecutivo para el local', localId); // Depuración
+        const consecutivoResponse = await fetch(`${backend}api/cajas/local/${localId}/ultima`); // Ajusta la URL según tu API
+
+        // Si la respuesta no es correcta, lanzar un error
         if (!consecutivoResponse.ok) {
           throw new Error('Error al obtener el último consecutivo');
         }
 
-        const { consecutivo } = await consecutivoResponse.json();
-        const nuevoConsecutivo = consecutivo + 1;
+        // Obtener el consecutivo de la respuesta
+        const { ultimaCaja } = await consecutivoResponse.json();
+        console.log('Última caja obtenida:', ultimaCaja); // Depuración
 
+        // Si no hay una caja previa, el consecutivo debe empezar en 1
+        const nuevoConsecutivo = ultimaCaja ? ultimaCaja.consecutivo + 1 : 1;
+        console.log('Nuevo consecutivo calculado:', nuevoConsecutivo); // Depuración
+
+        // Calcular el total de la caja sumando los valores de los billetes
         const total = Object.keys(billetes).reduce(
           (acc, denom) => acc + billetes[denom] * denom,
           0
         );
+        console.log('Total calculado:', total); // Depuración
 
+        // Hacer la solicitud para registrar la nueva caja
         const response = await fetch(`${backend}api/cajas`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            consecutivo: nuevoConsecutivo, 
-            tipoCaja,
+            consecutivo: nuevoConsecutivo,  // Nuevo consecutivo
+            tipoCaja,  // Tipo de caja
             tipoMoneda: Object.entries(billetes).map(([valor, cantidad]) => ({
               valor,
               cantidad
-            })),
-            totalCaja: total
+            })),  // Convertir billetes a formato adecuado
+            totalCaja: total,  // Total de la caja
+            localId: localId  // ID del local
           }),
         });
 
+        // Verificar que la solicitud fue exitosa
         if (!response.ok) {
           throw new Error('Error al registrar la caja');
         }
 
+        // Mostrar el resultado de la operación
         const resultado = await response.json();
-        toast.current.show({ severity: "success", summary: mensaje + ' realizado correctamente', life: 15000 });
-        console.log('Resultado:', resultado);
+        console.log('Resultado de la creación de la caja:', resultado); // Depuración
 
+        // Mostrar mensaje de éxito
+        toast.current.show({ severity: "success", summary: mensaje + ' realizado correctamente', life: 15000 });
+
+        // Establecer que se debe imprimir
         setImprimir(true);
+
+        // Verificar el estado de la caja
         verificarEstadoCaja();
+
       } catch (error) {
+        // Si ocurre un error, mostrar un mensaje de error
         console.error('Error:', error);
         alert('Ocurrió un error al registrar la caja');
       }
     }
-  };
+};
+
 
   const total = Object.keys(billetes).reduce(
     (acc, denom) => acc + billetes[denom] * denom,
