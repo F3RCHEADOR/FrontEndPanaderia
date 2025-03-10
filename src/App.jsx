@@ -4,7 +4,6 @@ import MainLayout from "./layout/MainLayout";
 import Second from "./pages/second.jsx";
 import Home from "./pages/home.jsx";
 import AddClient from "./pages/AddClient.jsx";
-import Inventories from "./pages/Inventories.jsx";
 import PaidPage from "./pages/PaidPage.jsx";
 import ContadorBilletes from "./pages/ContadorBilletes.jsx";
 import Ventas from "./pages/Ventas.jsx";
@@ -55,14 +54,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/Inventories"
-            element={
-              <ProtectedRoute>
-                <Inventories />
-              </ProtectedRoute>
-            }
-          />
+
           <Route
             path="/PaidPage"
             element={
@@ -111,7 +103,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/PisoPage"
             element={
               <ProtectedRoute>
@@ -119,7 +111,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/UserPage"
             element={
               <ProtectedRoute>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Client from '../assets/client.png';
+import Client from '../assets/sistema/client.png';
 import { useLocation } from 'react-router-dom';
 import CalculatorPanel from '../components/Cliente/Calculadora';
 

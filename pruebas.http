@@ -276,5 +276,16 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/api/cajas/local/6734d403de026b16e6cdf110
+GET  http://localhost:5000/api/cajas/ultima-caja/6734d403de026b16e6cdf110
 ###
+
+GET  http://localhost:5000/api/locales
+###
+
+GET  http://localhost:5000/api/usuarios
+
+###
+GET http://localhost:5000/api/pisos/local/6734d403de026b16e6cdf110
+
+###
+GET http://localhost:5000/api/mesas/piso/673611f5c0d74d95a4079420

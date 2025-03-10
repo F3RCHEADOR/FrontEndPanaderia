@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import FlechaArriba from "../../assets/arrowUp";
-import Home from "../../assets/hogar.png";
-import Inventory from "../../assets/inventory.png";
-import Productos from "../../assets/dairy.png";
-import Cash from "../../assets/money.png";
-import Cuenta from '../../assets/equipo-de-usuario.png';
+import FlechaArriba from "../../assets/sistema/arrowUp.jsx";
+import Home from "../../assets/sistema/hogar.png";
+import Productos from "../../assets/sistema/dairy.png";
+import Cash from "../../assets/sistema/money.png";
+import Cuenta from '../../assets/sistema/equipo-de-usuario.png';
 import { Link } from "react-router-dom";
 
 function Footer() {
@@ -56,12 +55,7 @@ function Footer() {
                   <span className="hidden md:block">Productos</span>
                 </Link>
               </li>
-              <li className="border-l-8 pb-1 border-r-8 px-2 hover:scale-105 duration-200">
-                <Link to={"Inventories"} className="flex flex-row items-center">
-                  <img src={Inventory} className="size-12" />
-                  <span className="hidden md:block">Inventarios</span>
-                </Link>
-              </li>
+           
               <li className="border-l-8 pb-1 border-r-8 px-2 hover:scale-105 duration-200">
                 <Link to={"MenuVentas"} className="flex flex-row items-center">
                   <img src={Cash} className="size-12" />

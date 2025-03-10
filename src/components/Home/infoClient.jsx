@@ -1,5 +1,5 @@
 import React from 'react';
-import clienteImagen from '../../assets/client.png';
+import clienteImagen from '../../assets/sistema/client.png';
 import ButtonPayment from '../Cliente/ButtonPayment';
 import ButtonEditClient from '../Cliente/ButtonEditClient';
 

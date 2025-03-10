@@ -1,8 +1,8 @@
 // src/AdministracionVentas.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Importa useNavigate
-import Ventas from '../assets/ventas.png'; 
-import Business from '../assets/business.png'; 
+import Ventas from '../assets/sistema/ventas.png'; 
+import Business from '../assets/sistema/business.png'; 
 
 const AdministracionVentas = () => {
   const navigate = useNavigate(); // Usa useNavigate en lugar de useHistory

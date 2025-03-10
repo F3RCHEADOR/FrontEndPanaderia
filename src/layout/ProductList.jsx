@@ -1,4 +1,4 @@
-import Plus from "../assets/plus.svg";
+import Plus from "../assets/sistema/plus.svg";
 import React, { useState, useEffect, useRef } from "react";
 import { Toast } from "primereact/toast";
 import "primereact/resources/themes/lara-light-cyan/theme.css";

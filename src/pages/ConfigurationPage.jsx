@@ -3,10 +3,10 @@ import { motion } from "framer-motion"; // Para animaciones
 import { Link } from "react-router-dom";
 import LocalSettingsModal from "../components/LocalConfig/LocalSettingsModal";
 
-import PisoImage from "../assets/piso.png"; // Imagen para el cuadro de "Configurar Pisos"
-import LocalImage from "../assets/equipo-de-usuario.png"; // Imagen para el cuadro de "Configurar Local"
-import UsuariosImage from "../assets/grupo.png"; // Imagen para el cuadro de "Configurar Usuarios"
-import GeneralImage from "../assets/client.png"; // Imagen para el cuadro de "Configuración General"
+import PisoImage from "../assets/sistema/piso.png"; // Imagen para el cuadro de "Configurar Pisos"
+import LocalImage from "../assets/sistema/equipo-de-usuario.png"; // Imagen para el cuadro de "Configurar Local"
+import UsuariosImage from "../assets/sistema/grupo.png"; // Imagen para el cuadro de "Configurar Usuarios"
+import GeneralImage from "../assets/sistema/client.png"; // Imagen para el cuadro de "Configuración General"
 
 const ConfigurationPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Puerta from '../../assets/puerta.png';
-import Salida from '../../assets/salida.png'
 
 const InfoUser = () => {
     const navigate = useNavigate();
@@ -9,6 +7,8 @@ const InfoUser = () => {
     // Estado local para manejar la información del usuario
     const [username, setUsername] = useState(null);
     const [role, setRole] = useState(null);
+
+    console.log("usuario: ", username, "role: ", role);
 
     // Cargar los datos de localStorage cuando el componente se monta
     useEffect(() => {

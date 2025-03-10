@@ -143,17 +143,14 @@ const Informes = () => {
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4 text-center">Informes</h2>
       <div className="grid grid-cols-1 gap-4  md:grid-cols-2">
-        <div className="bg-white shadow-md rounded-lg p-4">
-          <h3 className="text-lg font-bold mb-2">Ventas del Día</h3>
-          <Line data={getVentasPorDia()} />
-        </div>
-        <div className="bg-white shadow-md rounded-lg p-4">
-          <h3 className="text-lg font-bold mb-2">Ventas de la Semana</h3>
-          <Line data={getVentasPorSemana()} />
-        </div>
-        <div className="bg-white shadow-md rounded-lg p-4">
+       
+        <div className="col-span-2 bg-white shadow-md rounded-lg p-4 w-1/2  mx-auto">
           <h3 className="text-lg font-bold mb-2">Ventas del Mes</h3>
           <Line data={getVentasPorMes()} />
+        </div>
+        <div className="bg-white shadow-md rounded-lg p-4 h-96">
+          <h3 className="text-lg font-bold mb-2">Ventas de la Semana</h3>
+          <Line data={getVentasPorSemana()} />
         </div>
         <div className="bg-white shadow-md rounded-lg p-4 h-96">
           <h3 className="text-lg font-bold mb-2">Productos Más Pedidos</h3>

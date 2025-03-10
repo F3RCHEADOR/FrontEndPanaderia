@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import CajaRegistradora from "../../assets/cashRegister.png";
-import Money from "../../assets/money.png";
-import Inventory from "../../assets/inventory.png";
-import Client from "../../assets/client.png";
-import Ventas from "../../assets/ventas.png";
+import CajaRegistradora from "../../assets/sistema/cashRegister.png";
+import Money from "../../assets/sistema/money.png";
+import Inventory from "../../assets/sistema/inventory.png";
+import Client from "../../assets/sistema/client.png";
+import Ventas from "../../assets/sistema/ventas.png";
 import { Link } from "react-router-dom";
 
 const backend = import.meta.env.VITE_BUSINESS_BACKEND;
@@ -17,7 +17,7 @@ function Caja() {
   useEffect(() => {
     const obtenerEstadoCaja = async () => {
       try {
-        const response = await fetch(`${backend}api/cajas/local/${localId}/ultima`);
+        const response = await fetch(`${backend}api/cajas/ultima-caja/${localId}`);
         if (!response.ok)
           throw new Error("Error al obtener el estado de la caja");
 

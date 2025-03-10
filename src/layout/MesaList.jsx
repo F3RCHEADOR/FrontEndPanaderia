@@ -121,7 +121,7 @@ const MesaList = () => {
   useEffect(() => {
     const obtenerEstadoCaja = async () => {
       try {
-        const response = await axios.get(`${backend}api/cajas/ultima-caja`);
+        const response = await axios.get(`${backend}api/cajas/ultima-caja/${localId}`);
         if (response.data) {
           setTipoCaja(
             response.data.ultimaCaja.tipoCaja === "cierre"
@@ -137,13 +137,14 @@ const MesaList = () => {
 
     const fetchData = async () => {
       try {
-        const mesasResponse = await axios.get(`${backend}api/mesas/local/${localId}`);
+        const mesasResponse = await axios.get(`${backend}api/mesas`);
         setMesas(mesasResponse.data);
 
         const pisosResponse = await axios.get(
           `${backend}api/pisos/local/${localId}`
         );
         setPisos(pisosResponse.data);
+        console.log(pisos);
       } catch (error) {
         console.error("Error al cargar datos:", error);
       }

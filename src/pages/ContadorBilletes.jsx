@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import convertirNumero from '../numberToWords.js';
-import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
+import React, { useState, useEffect, useRef } from "react";
+import convertirNumero from "../numberToWords.js";
+import { Button } from "primereact/button";
+import { Toast } from "primereact/toast";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
-import InvoiceCaja from '../components/InvoiceCaja.jsx';
+import InvoiceCaja from "../components/InvoiceCaja.jsx";
 
 function ContadorBilletes() {
   const toast = useRef(null);
@@ -21,7 +21,7 @@ function ContadorBilletes() {
     500: 0,
     200: 0,
     100: 0,
-    50: 0
+    50: 0,
   });
 
   const [tipoCaja, setTipoCaja] = useState(null);
@@ -34,25 +34,31 @@ function ContadorBilletes() {
 
   const verificarEstadoCaja = async () => {
     try {
-      const response = await fetch(`${backend}api/cajas/local/${localId}`);
-      if (!response.ok) throw new Error('Error al obtener el estado de la caja');
+      const response = await fetch(
+        `${backend}api/cajas/ultima-caja/${localId}`
+      );
+      if (!response.ok)
+        throw new Error("Error al obtener el estado de la caja");
 
       const data = await response.json();
-      const ultimoRegistro = data[data.length - 1];
+      console.table(data)
+      const ultimoRegistro = data.ultimaCaja;
 
       if (ultimoRegistro) {
-        setTipoCaja(ultimoRegistro.tipoCaja === 'apertura' ? 'cierre' : 'apertura');
-        setIdCaja(ultimoRegistro.id + 1);
+        setTipoCaja(
+          ultimoRegistro.tipoCaja === "apertura" ? "cierre" : "apertura"
+        );
+        setIdCaja(ultimoRegistro.consecutivo + 1);
         setUltimoTotal(ultimoRegistro.totalCaja);
         setUltimoTotalLetras(convertirNumero(ultimoRegistro.totalCaja));
         setUltimoFecha(ultimoRegistro.creado);
-
+        console.log(tipoCaja);
       } else {
-        setTipoCaja('apertura');
+        setTipoCaja("apertura");
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('Ocurrió un error al verificar el estado de la caja');
+      console.error("Error:", error);
+      alert("Ocurrió un error al verificar el estado de la caja");
     }
   };
 
@@ -76,90 +82,94 @@ function ContadorBilletes() {
   const handleChange = (denominacion, valor) => {
     setBilletes((prevBilletes) => ({
       ...prevBilletes,
-      [denominacion]: parseInt(valor, 10) || 0
+      [denominacion]: parseInt(valor, 10) || 0,
     }));
   };
 
-  const mensaje = tipoCaja === 'apertura' ? 'Abrir Caja' : 'Cerrar Caja';
+  const mensaje = tipoCaja === "apertura" ? "Abrir Caja" : "Cerrar Caja";
 
   const confirmarCaja = async () => {
     // Confirma si el usuario quiere realizar la acción
-    if (confirm('¿Estás seguro de realizar esta acción?')) {
+    if (confirm("¿Estás seguro de realizar esta acción?")) {
       try {
         // Verificar si se ha seleccionado el tipo de caja
         if (!tipoCaja) {
-          alert('No se pudo determinar el tipo de caja');
+          alert("No se pudo determinar el tipo de caja");
           return;
         }
 
         // Obtener el último consecutivo para el local
-        console.log('Solicitando el último consecutivo para el local', localId); // Depuración
-        const consecutivoResponse = await fetch(`${backend}api/cajas/local/${localId}/ultima`); // Ajusta la URL según tu API
+        console.log("Solicitando el último consecutivo para el local", localId); // Depuración
+        const consecutivoResponse = await fetch(
+          `${backend}api/cajas/ultima-caja/${localId}`
+        ); // Ajusta la URL según tu API
 
         // Si la respuesta no es correcta, lanzar un error
         if (!consecutivoResponse.ok) {
-          throw new Error('Error al obtener el último consecutivo');
+          throw new Error("Error al obtener el último consecutivo");
         }
 
         // Obtener el consecutivo de la respuesta
         const { ultimaCaja } = await consecutivoResponse.json();
-        console.log('Última caja obtenida:', ultimaCaja); // Depuración
+        console.log("Última caja obtenida:", ultimaCaja); // Depuración
 
         // Si no hay una caja previa, el consecutivo debe empezar en 1
         const nuevoConsecutivo = ultimaCaja ? ultimaCaja.consecutivo + 1 : 1;
-        console.log('Nuevo consecutivo calculado:', nuevoConsecutivo); // Depuración
+        console.log("Nuevo consecutivo calculado:", nuevoConsecutivo); // Depuración
 
         // Calcular el total de la caja sumando los valores de los billetes
         const total = Object.keys(billetes).reduce(
           (acc, denom) => acc + billetes[denom] * denom,
           0
         );
-        console.log('Total calculado:', total); // Depuración
+        console.log("Total calculado:", total); // Depuración
 
         // Hacer la solicitud para registrar la nueva caja
         const response = await fetch(`${backend}api/cajas`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            consecutivo: nuevoConsecutivo,  // Nuevo consecutivo
-            tipoCaja,  // Tipo de caja
+            consecutivo: nuevoConsecutivo, // Nuevo consecutivo
+            tipoCaja, // Tipo de caja
             tipoMoneda: Object.entries(billetes).map(([valor, cantidad]) => ({
               valor,
-              cantidad
-            })),  // Convertir billetes a formato adecuado
-            totalCaja: total,  // Total de la caja
-            localId: localId  // ID del local
+              cantidad,
+            })), // Convertir billetes a formato adecuado
+            totalCaja: total, // Total de la caja
+            localId: localId, // ID del local
           }),
         });
 
         // Verificar que la solicitud fue exitosa
         if (!response.ok) {
-          throw new Error('Error al registrar la caja');
+          throw new Error("Error al registrar la caja");
         }
 
         // Mostrar el resultado de la operación
         const resultado = await response.json();
-        console.log('Resultado de la creación de la caja:', resultado); // Depuración
+        console.log("Resultado de la creación de la caja:", resultado); // Depuración
 
         // Mostrar mensaje de éxito
-        toast.current.show({ severity: "success", summary: mensaje + ' realizado correctamente', life: 15000 });
+        toast.current.show({
+          severity: "success",
+          summary: mensaje + " realizado correctamente",
+          life: 15000,
+        });
 
         // Establecer que se debe imprimir
         setImprimir(true);
 
         // Verificar el estado de la caja
         verificarEstadoCaja();
-
       } catch (error) {
         // Si ocurre un error, mostrar un mensaje de error
-        console.error('Error:', error);
-        alert('Ocurrió un error al registrar la caja');
+        console.error("Error:", error);
+        alert("Ocurrió un error al registrar la caja");
       }
     }
-};
-
+  };
 
   const total = Object.keys(billetes).reduce(
     (acc, denom) => acc + billetes[denom] * denom,
@@ -170,12 +180,12 @@ function ContadorBilletes() {
 
   const formatearFecha = () => {
     const fecha = new Date();
-    const dia = String(fecha.getDate()).padStart(2, '0');
-    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, "0");
+    const mes = String(fecha.getMonth() + 1).padStart(2, "0");
     const anio = fecha.getFullYear();
-    const horas = String(fecha.getHours()).padStart(2, '0');
-    const minutos = String(fecha.getMinutes()).padStart(2, '0');
-    const segundos = String(fecha.getSeconds()).padStart(2, '0');
+    const horas = String(fecha.getHours()).padStart(2, "0");
+    const minutos = String(fecha.getMinutes()).padStart(2, "0");
+    const segundos = String(fecha.getSeconds()).padStart(2, "0");
     return `${dia}/${mes}/${anio} ${horas}:${minutos}:${segundos}`;
   };
 
@@ -183,10 +193,12 @@ function ContadorBilletes() {
     <>
       <Toast ref={toast} />
       <div className="max-w-screen h-screen mx-auto p-8 bg-white border border-gray-300 rounded-lg shadow-lg">
-        <div className='grid grid-cols-3 gap-4'>
-          <div className='col-span-2 px-4'>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="col-span-2 px-4">
             <div className="grid grid-cols-2 gap-4 border-4 p-4 rounded-xl">
-              <h2 className='text-center col-span-2 text-2xl font-extrabold'>Contenido de la Caja</h2>
+              <h2 className="text-center col-span-2 text-2xl font-extrabold">
+                Contenido de la Caja
+              </h2>
               {Object.keys(billetes)
                 .sort((a, b) => b - a)
                 .map((denominacion) => (
@@ -200,7 +212,9 @@ function ContadorBilletes() {
                     <input
                       type="number"
                       value={billetes[denominacion]}
-                      onChange={(e) => handleChange(denominacion, e.target.value)}
+                      onChange={(e) =>
+                        handleChange(denominacion, e.target.value)
+                      }
                       className="w-20 p-2 border border-gray-300 rounded-lg shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150"
                       min="0"
                     />
@@ -209,34 +223,54 @@ function ContadorBilletes() {
             </div>
           </div>
           <div className="flex flex-col items-center ">
-            <div className='bg-slate-100 border-4 rounded-xl p-2 w-full m-2 mb-4 space-y-2'>
-              <h2 className='text-center font-bold text-lg italic bg-blue-100'>Datos {tipoCaja === 'apertura' ? 'Ultimo Cierre' : 'Ultima Apertura'} de Caja</h2>
-              <div className='flex items-center justify-between font-semibold italic'>
-                <span className='bg-blue-200 p-1 rounded-full'>Fecha</span>
-
+            <div className="bg-slate-100 border-4 rounded-xl p-2 w-full m-2 mb-4 space-y-2">
+              <h2 className="text-center font-bold text-lg italic bg-blue-100">
+                Datos{" "}
+                {tipoCaja === "apertura" ? "Ultimo Cierre" : "Ultima Apertura"}{" "}
+                de Caja
+              </h2>
+              <div className="flex items-center justify-between font-semibold italic">
+                <span className="bg-blue-200 p-1 rounded-full">Fecha</span>
               </div>
-              <div className='flex items-center justify-between font-bold underline'>
+              <div className="flex items-center justify-between font-bold underline">
                 <span>{ultimoFecha}</span>
               </div>
-              <div className='flex items-center justify-between font-bold'>
-                <span className='italic bg-blue-200 p-1 rounded-full'>Total Caja</span>
-                <span className='underline'>{ultimoTotal}</span>
+              <div className="flex items-center justify-between font-bold">
+                <span className="italic bg-blue-200 p-1 rounded-full">
+                  Total Caja
+                </span>
+                <span className="underline">{ultimoTotal}</span>
               </div>
-              <h2 className='w-full text-center font-bold p-2 bg-blue-200 italic'>
-                Total en Letras: <span className='underline'>{ultimoTotalLetras}</span>
+              <h2 className="w-full text-center font-bold p-2 bg-blue-200 italic">
+                Total en Letras:{" "}
+                <span className="underline">{ultimoTotalLetras}</span>
               </h2>
-              <Button label={'Imprimir'} className='bg-green-400 p-2 font-bold border-4 flex items-center justify-center mx-auto rounded-xl hover:bg-green-500 ' />
+              <Button
+                label={"Imprimir"}
+                className="bg-green-400 p-2 font-bold border-4 flex items-center justify-center mx-auto rounded-xl hover:bg-green-500 "
+              />
             </div>
-            <div className='w-full border-4 p-2'>
-              <h1 className='text-center bg-green-200 font-bold text-2xl p-1 mb-2'>
-                {tipoCaja === 'apertura' ? 'Apertura de la Caja' : 'Cierre de la Caja'}
+            <div className="w-full border-4 p-2">
+              <h1 className="text-center bg-green-200 font-bold text-2xl p-1 mb-2">
+                {tipoCaja === "apertura"
+                  ? "Apertura de la Caja"
+                  : "Cierre de la Caja"}
               </h1>
-              <h3 className='text-2xl font-semibold text-gray-800'>Caja Numero: #{idCaja}</h3>
-              <p className="text-2xl font-semibold text-gray-800">Total: ${total}</p>
+              <h3 className="text-2xl font-semibold text-gray-800">
+                Caja Numero: #{idCaja}
+              </h3>
+              <p className="text-2xl font-semibold text-gray-800">
+                Total: ${total}
+              </p>
               <p className="text-lg font-medium text-gray-600 mt-2">
                 ({totalEnLetras})
               </p>
-              <p className='text-lg font-medium text-gray-600 mt-2 text-center'> Fecha y Hora de {tipoCaja === 'apertura' ? 'Apertura' : 'Cierre'}: {formatearFecha()}</p>
+              <p className="text-lg font-medium text-gray-600 mt-2 text-center">
+                {" "}
+                Fecha y Hora de{" "}
+                {tipoCaja === "apertura" ? "Apertura" : "Cierre"}:{" "}
+                {formatearFecha()}
+              </p>
 
               <Button
                 className="bg-red-400 p-2 border-4 rounded-xl flex items-center justify-center mx-auto font-extrabold text-lg hover:scale-105 hover:bg-red-500 mt-2"
