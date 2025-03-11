@@ -18,8 +18,8 @@ const ProductList = () => {
   const [newProductPrice, setNewProductPrice] = useState("");
   const [productos, setProductos] = useState([]); // Estado para productos
   const [hasIva, setHasIva] = useState(false); // Estado para el IVA
-  const [newCategoryName, setNewCategoryName] = useState('');
-  const [selectedImage, setSelectedImage] = useState('');
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(false); // Estado de carga
 
   // Cargar las categorías al montar el componente
@@ -28,7 +28,9 @@ const ProductList = () => {
     if (localId) {
       setLoading(true);
       try {
-        const response = await fetch(`${backend}api/categorias/local/${localId}`);
+        const response = await fetch(
+          `${backend}api/categorias/local/${localId}`
+        );
         const data = await response.json();
         if (Array.isArray(data)) {
           setCategorias(data);
@@ -90,7 +92,6 @@ const ProductList = () => {
     setSelectedCategoria(null);
   };
 
-
   // Crear nueva categoría
   const createCategory = async () => {
     if (!newCategoryName) {
@@ -109,8 +110,8 @@ const ProductList = () => {
     const categorie = {
       nombre: newCategoryName,
       imagen: selectedImage,
-      localId: localStorage.getItem("localId")
-    }
+      localId: localStorage.getItem("localId"),
+    };
 
     try {
       const response = await fetch(backend + "api/categorias/", {
@@ -120,7 +121,6 @@ const ProductList = () => {
         },
         body: JSON.stringify(categorie),
       });
-
 
       if (response.ok) {
         const newCategory = await response.json();
@@ -134,7 +134,7 @@ const ProductList = () => {
           life: 15000,
         });
       } else {
-        console.log(response)
+        console.log(response);
         throw new Error(response.statusText);
       }
     } catch (error) {
@@ -147,7 +147,6 @@ const ProductList = () => {
       console.error("Error al crear categoría:", error);
     }
   };
-
 
   // Crear nuevo producto
   const createProduct = async () => {
@@ -172,16 +171,13 @@ const ProductList = () => {
     };
 
     try {
-      const response = await fetch(
-        backend + `api/productos/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(product),
-        }
-      );
+      const response = await fetch(backend + `api/productos/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(product),
+      });
 
       if (response.ok) {
         const newProduct = await response.json();
@@ -219,16 +215,12 @@ const ProductList = () => {
     }
   };
 
-
   const handleDeleteProduct = async (categoriaId, productoId) => {
     if (confirm("¿Deseas Eliminar el Producto Seleccionado?")) {
       try {
-        const response = await fetch(
-          `${backend}api/productos/${productoId}`,
-          {
-            method: "DELETE",
-          }
-        );
+        const response = await fetch(`${backend}api/productos/${productoId}`, {
+          method: "DELETE",
+        });
 
         if (response.ok) {
           fetchCategorias();
@@ -274,8 +266,7 @@ const ProductList = () => {
           </button>
         </div>
 
-
-        <div className="relative grid grid-cols-2 md:grid-cols-3 gap-8 p-1">
+        <div className="relative grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 p-1">
           {categorias.map((categoria) => (
             <div key={categoria._id} className="mb-4 group h-56">
               <h2 className="text-lg md:text-2xl font-semibold mb-4 text-center">
@@ -288,17 +279,41 @@ const ProductList = () => {
                 <img
                   src={categoria.imagen}
                   alt={categoria.nombre}
-                  className="mx-auto object-cover rounded mb-4"
+                  className="mx-auto h-28 object-cover rounded mb-4"
                 />
               </button>
 
               {activeCategoriaId === categoria._id && (
                 <div className="border-8 border-gray-400 rounded-xl w-full  md:w-auto fixed top-1/2 z-30 h-96 overflow-auto left-1/2 bg-white p-2 md:p-8 transform -translate-y-1/2 -translate-x-1/2">
-                  <button className="absolute top-4 right-1 w-8 h-8 bg-red-400 font-bold rounded-full text-center hover:scale-105 hover:text-white" onClick={handleCategoriaClick}>X</button>
+                  <button
+                    className="absolute top-4 right-1 w-8 h-8 bg-red-400 font-bold rounded-full text-center hover:scale-105 hover:text-white"
+                    onClick={handleCategoriaClick}
+                  >
+                    X
+                  </button>
                   <ul className="space-y-2 w-auto md:w-[550px]">
-                    <h2 className="font-bold text-lg md:text-xl bg-gray-100 underline m-4 flex items-center justify-center h-12 mt-2">
-                      Lista de Productos de {categoria.nombre}
-                    </h2>
+                    <div className="flex items-center justify-start md:justify-center space-x-4  mt-10 md:my-2">
+                      {" "}
+                      <h2 className="font-bold text-base md:text-lg text-clip">
+                        Lista de Productos de {categoria.nombre}
+                      </h2>
+                      <button className="hover:scale-125 transform transition-all">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                     <div className="px-4 py-2 grid grid-cols-5 gap-4 font-bold text-sm md:text-lg underline">
                       <span className="col-span-2">Producto</span>
                       <span className="text-center">Precio</span>
@@ -344,13 +359,22 @@ const ProductList = () => {
             </div>
           ))}
           {showNewProduct && selectedCategoria && (
-            <div className={`absolute top-1/2 right-1/2 transform translate-x-1/2 -translate-y-1/2 w-full md:w-[500px] h-auto bg-white border-8 rounded-xl`}>
+            <div
+              className={`absolute top-1/2 right-1/2 transform translate-x-1/2 -translate-y-1/2 w-full md:w-[500px] h-auto bg-white border-8 rounded-xl`}
+            >
               <h2 className="bg-green-200 text-center p-1 mr-10 ml-2 text-base md:text-xl font-bold underline rounded-xl mt-4">
                 Nuevo Producto en {selectedCategoria.nombre}
               </h2>
-              <button className="absolute top-2 right-1 w-8 h-8 bg-red-300 font-bold rounded-full text-center hover:scale-105 hover:text-white" onClick={handleCloseNewProduct}>X</button>
+              <button
+                className="absolute top-2 right-1 w-8 h-8 bg-red-300 font-bold rounded-full text-center hover:scale-105 hover:text-white"
+                onClick={handleCloseNewProduct}
+              >
+                X
+              </button>
               <div className="flex flex-col items-center p-6">
-                <label className="block mb-2 font-bold">Nombre del Producto</label>
+                <label className="block mb-2 font-bold">
+                  Nombre del Producto
+                </label>
                 <input
                   type="text"
                   value={newProductName}
@@ -385,9 +409,16 @@ const ProductList = () => {
 
           {/* Formulario para Nueva Categoría */}
           {showNewCategory && (
-            <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full md:w-[500px] bg-white border-8 rounded-xl p-6'>
-              <h2 className="bg-green-200 text-center p-2 m-2 text-xl font-bold underline rounded-xl">Nueva Categoría</h2>
-              <button className="absolute top-4 right-4 w-8 h-8 bg-red-300 font-bold rounded-full text-center hover:scale-105 hover:text-white" onClick={() => setShowNewCategory(false)}>X</button>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full md:w-[500px] bg-white border-8 rounded-xl p-6">
+              <h2 className="bg-green-200 text-center p-2 m-2 text-xl font-bold underline rounded-xl">
+                Nueva Categoría
+              </h2>
+              <button
+                className="absolute top-4 right-4 w-8 h-8 bg-red-300 font-bold rounded-full text-center hover:scale-105 hover:text-white"
+                onClick={() => setShowNewCategory(false)}
+              >
+                X
+              </button>
               <div className="flex flex-col items-center">
                 <label className="block mb-2">Nombre de la Categoría</label>
                 <input
@@ -407,7 +438,6 @@ const ProductList = () => {
             </div>
           )}
         </div>
-
       </div>
     </>
   );

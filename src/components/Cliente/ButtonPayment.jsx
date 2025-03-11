@@ -18,7 +18,7 @@ const ButtonPayment = ({ cliente }) => {
 
   return (
     <div className='bg-green-100 '>
-      <button onClick={handlePay} className='bg-green-600 text-white font-bold text-center flex items-center justify-center mx-auto p-2 mt-4 mb-2 rounded-xl hover:scale-110 duration-100 '>Efectuar Pago</button>
+      <button onClick={handlePay} className='bg-green-600 text-white w-full font-bold text-center flex items-center justify-center mx-auto p-2 mt-4 mb-2 rounded-md hover:scale-110 duration-100 '>Efectuar Pago</button>
     </div>
   )
 }

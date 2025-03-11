@@ -137,7 +137,7 @@ const MesaList = () => {
 
     const fetchData = async () => {
       try {
-        const mesasResponse = await axios.get(`${backend}api/mesas`);
+        const mesasResponse = await axios.get(`${backend}api/mesas/local/${localId}`);
         setMesas(mesasResponse.data);
 
         const pisosResponse = await axios.get(

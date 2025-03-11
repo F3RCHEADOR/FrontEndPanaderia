@@ -1,6 +1,6 @@
-import React from 'react';
-import ButtonPayment from './Cliente/ButtonPayment';
-import ButtonEditClient from './Cliente/ButtonEditClient';
+import React from "react";
+import ButtonPayment from "./Cliente/ButtonPayment";
+import ButtonEditClient from "./Cliente/ButtonEditClient";
 
 const InfoMesa = ({ mesa, onClose }) => {
   if (!mesa) return null;
@@ -8,17 +8,19 @@ const InfoMesa = ({ mesa, onClose }) => {
   // Campo adicional: tipoCliente
   const clienteConTipo = {
     ...mesa,
-    tipoCliente: 'Mesa', // Puedes cambiar esto si deseas agregar un tipo de cliente específico
+    tipoCliente: "Mesa", // Puedes cambiar esto si deseas agregar un tipo de cliente específico
   };
 
-
-  console.log(mesa)
+  console.log(mesa);
 
   // Asegúrate de que la propiedad `productos` exista y es un array
   const productos = Array.isArray(mesa.productos) ? mesa.productos : [];
 
   // Calcular el valor acumulado sumando los valorTotal de los productos
-  const valorAcumulado = productos.reduce((acc, producto) => acc + producto.valorTotal, 0);
+  const valorAcumulado = productos.reduce(
+    (acc, producto) => acc + producto.valorTotal,
+    0
+  );
 
   return (
     <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 z-50 border-4 h-auto max-h-80 overflow-auto w-96 p-4 bg-white shadow-md rounded">
@@ -31,7 +33,11 @@ const InfoMesa = ({ mesa, onClose }) => {
       <h3 className="text-xl font-semibold text-center bg-orange-300 capitalize">
         Mesa {mesa.nombre}
       </h3>
-      <img src={mesa.imagen} alt={`Mesa ${mesa.nombre}`} className="w-28 mx-auto my-2" />
+      <img
+        src={mesa.imagen}
+        alt={`Mesa ${mesa.nombre}`}
+        className="w-28 mx-auto my-2"
+      />
 
       <p className="pl-4">
         <strong>Valor Acumulado:</strong> ${valorAcumulado}
@@ -67,9 +73,11 @@ const InfoMesa = ({ mesa, onClose }) => {
         <>
           <ButtonEditClient cliente={clienteConTipo} />
           <ButtonPayment cliente={clienteConTipo} />
+          <button className="mt-2 w-full p-2 bg-red-500 font-semibold text-white rounded hover:bg-red-600">
+            Vaciar Mesa
+          </button>
         </>
       )}
-
     </div>
   );
 };
