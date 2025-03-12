@@ -41,7 +41,7 @@ function ContadorBilletes() {
         throw new Error("Error al obtener el estado de la caja");
 
       const data = await response.json();
-      console.table(data)
+      console.table(data);
       const ultimoRegistro = data.ultimaCaja;
 
       if (ultimoRegistro) {
@@ -223,57 +223,82 @@ function ContadorBilletes() {
             </div>
           </div>
           <div className="flex flex-col items-center ">
-            <div className="bg-slate-100 border-4 rounded-xl p-2 w-full m-2 mb-4 space-y-2">
-              <h2 className="text-center font-bold text-lg italic bg-blue-100">
-                Datos{" "}
-                {tipoCaja === "apertura" ? "Ultimo Cierre" : "Ultima Apertura"}{" "}
-                de Caja
+            <div className="bg-white border-4 rounded-xl p-6 w-full m-4 mb-6 shadow-lg space-y-6">
+              <h2 className="text-center font-bold text-2xl text-blue-700 italic bg-blue-100 py-4 rounded-md">
+                {`Datos ${
+                  tipoCaja === "apertura" ? "Último Cierre" : "Última Apertura"
+                } de Caja`}
               </h2>
-              <div className="flex items-center justify-between font-semibold italic">
-                <span className="bg-blue-200 p-1 rounded-full">Fecha</span>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Fecha */}
+                <div className="flex flex-col items-center justify-center bg-blue-50 p-4 rounded-xl shadow-md">
+                  <span className="text-sm font-semibold text-gray-600 bg-blue-200 p-2 rounded-full">
+                    Fecha
+                  </span>
+                  <span className="font-bold text-lg text-blue-600 mt-2">
+                    {formatearFecha()}
+                  </span>
+                </div>
+
+                {/* Total Caja */}
+                <div className="flex flex-col items-center justify-center bg-blue-50 p-4 rounded-xl shadow-md">
+                  <span className="text-sm font-semibold text-gray-600 bg-blue-200 p-2 rounded-full">
+                    Total Caja
+                  </span>
+                  <span className="font-bold text-lg text-green-600 mt-2">
+                    {ultimoTotal}
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center justify-between font-bold underline">
-                <span>{ultimoFecha}</span>
+
+              {/* Total en Letras */}
+              <div className="w-full text-center font-bold p-4 bg-blue-200 rounded-lg shadow-md">
+                <span>Total en Letras: </span>
+                <span className="underline">{ultimoTotalLetras} pesos</span>
               </div>
-              <div className="flex items-center justify-between font-bold">
-                <span className="italic bg-blue-200 p-1 rounded-full">
-                  Total Caja
-                </span>
-                <span className="underline">{ultimoTotal}</span>
-              </div>
-              <h2 className="w-full text-center font-bold p-2 bg-blue-200 italic">
-                Total en Letras:{" "}
-                <span className="underline">{ultimoTotalLetras}</span>
-              </h2>
+
+              {/* Botón Imprimir */}
               <Button
                 label={"Imprimir"}
-                className="bg-green-400 p-2 font-bold border-4 flex items-center justify-center mx-auto rounded-xl hover:bg-green-500 "
+                className="bg-green-400 p-3 font-bold border-4 flex items-center justify-center mx-auto rounded-xl hover:bg-green-500 text-white shadow-md mt-6"
               />
             </div>
-            <div className="w-full border-4 p-2">
-              <h1 className="text-center bg-green-200 font-bold text-2xl p-1 mb-2">
+
+            <div className="w-full max-w-xl mx-auto bg-white border-4 rounded-xl p-6 shadow-xl space-y-6">
+              <h1 className="text-center bg-green-200 font-bold text-2xl py-3 rounded-lg text-green-700">
                 {tipoCaja === "apertura"
                   ? "Apertura de la Caja"
                   : "Cierre de la Caja"}
               </h1>
-              <h3 className="text-2xl font-semibold text-gray-800">
-                Caja Numero: #{idCaja}
-              </h3>
-              <p className="text-2xl font-semibold text-gray-800">
-                Total: ${total}
-              </p>
-              <p className="text-lg font-medium text-gray-600 mt-2">
-                ({totalEnLetras})
-              </p>
-              <p className="text-lg font-medium text-gray-600 mt-2 text-center">
-                {" "}
-                Fecha y Hora de{" "}
-                {tipoCaja === "apertura" ? "Apertura" : "Cierre"}:{" "}
-                {formatearFecha()}
-              </p>
 
+              <div className="space-y-2">
+                {/* Caja Numero */}
+                <h3 className="text-2xl font-semibold text-gray-800 text-center">
+                  Caja Número: #{idCaja}
+                </h3>
+
+                {/* Total */}
+                <p className="text-2xl font-semibold text-gray-800 text-center">
+                  Total: <span className="text-green-600">${total}</span>
+                </p>
+
+                {/* Total en Letras */}
+                <p className="text-lg font-medium text-gray-600 text-center">
+                  ({totalEnLetras})
+                </p>
+
+                {/* Fecha y Hora */}
+                <p className="text-lg font-medium text-gray-600 mt-2 text-center">
+                  Fecha y Hora de{" "}
+                  {tipoCaja === "apertura" ? "Apertura" : "Cierre"}:{" "}
+                  <span className="text-blue-600">{formatearFecha()}</span>
+                </p>
+              </div>
+
+              {/* Botón Confirmar */}
               <Button
-                className="bg-red-400 p-2 border-4 rounded-xl flex items-center justify-center mx-auto font-extrabold text-lg hover:scale-105 hover:bg-red-500 mt-2"
+                className="bg-red-400 p-3 border-4 rounded-xl flex items-center justify-center mx-auto font-extrabold text-lg text-white hover:scale-105 hover:bg-red-500 mt-4 shadow-md"
                 onClick={confirmarCaja}
                 label={mensaje}
               />

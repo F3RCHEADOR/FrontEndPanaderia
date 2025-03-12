@@ -226,7 +226,7 @@ const ProductSlider = ({ onUpdateCart, clientData }) => {
               .filter((producto) => producto.categoriaId === activeCategoriaId)
               .map((producto) => (
                 <div key={producto._id} className="p-4 border-4 border-gray-400 rounded-xl">
-                  <h3 className="text-lg font-semibold mb-2 text-center">{producto.nombre}</h3>
+                  <h3 className="text-lg font-semibold mb-2 text-center capitalize">{producto.nombre}</h3>
                   <div className="flex space-x-2 items-center justify-between my-2">
                     <span className="bg-green-300 text-center font-bold">${producto.precio}</span>
                     <div className="flex space-x-2">

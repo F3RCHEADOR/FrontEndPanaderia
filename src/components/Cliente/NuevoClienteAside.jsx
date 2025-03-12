@@ -140,7 +140,7 @@ const NuevoClienteAside = ({ isEdit, clientData, productos }) => {
         />
 
         <h2 className="text-base md:text-lg font-bold mb-4">Selección:</h2>
-        <ul className="text-sm md:text-base w-full px-1 md:px-4">
+        <ul className="text-sm md:text-base w-full px-1 md:px-4 capitalize">
           {Object.entries(productos).map(([id, { nombre, cantidad }]) => (
             cantidad > 0 && (
               <li key={id} className="flex justify-between items-center mb-2">

@@ -138,9 +138,14 @@ const Ventas = () => {
                       </div>
                     </details>
                   </td>
-                  <td className="p-2 border-r-2">
+                  <td className="p-2 border-r-2 flex flex-col sm:flex-row items-center justify-center">
                     <button
-                      className="flex items-center justify-center mx-auto m-2 bg-red-400 hover:bg-red-300 rounded-full p-2"
+                      className="flex items-center font-semibold border transform transition-all hover:scale-105 justify-center mx-auto m-2 bg-green-400 hover:bg-green-300 rounded-full p-2"
+                    >
+                      Imprimir
+                    </button>
+                    <button
+                      className="flex items-center justify-center  font-semibold border  transform transition-all hover:scale-105 mx-auto m-2 bg-red-400 hover:bg-red-300 rounded-full p-2"
                       onClick={() => handleDelete(venta._id)}
                     >
                       Eliminar

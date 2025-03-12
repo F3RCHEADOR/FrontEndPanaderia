@@ -78,10 +78,10 @@ const ClientList = () => {
   };
 
   return (
-    <div className="fixed overflow-x-hidden xl:min-h-screen border-r-4 w-32 xl:w-56">
+    <div className="fixed overflow-auto min-h-screen border-r-4 w-32 xl:w-56">
       <InfoUser />
       <h1 className="text-2xl font-bold mb-4 mt-1 bg-green-200 text-center overflow-x-auto">Clientes</h1>
-      <div className="space-y-8 mt-12 p-4 xl:p-6 ">
+      <div className="space-y-8 mt-12 p-4 xl:p-6 overflow-auto max-h-[650px]">
         {clientes.map((cliente) => (
           <Client
             key={cliente._id}

@@ -73,9 +73,6 @@ const InfoMesa = ({ mesa, onClose }) => {
         <>
           <ButtonEditClient cliente={clienteConTipo} />
           <ButtonPayment cliente={clienteConTipo} />
-          <button className="mt-2 w-full p-2 bg-red-500 font-semibold text-white rounded hover:bg-red-600">
-            Vaciar Mesa
-          </button>
         </>
       )}
     </div>

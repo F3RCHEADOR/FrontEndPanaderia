@@ -15,7 +15,7 @@ const Home = () => {
 
   return (
     <div className='w-full'>
-      <div className='relative z-50'><ClientList onDropCliente={handleClienteDrop} /></div>
+      <div className='relative z-50 '><ClientList onDropCliente={handleClienteDrop} /></div>
       <div className='ml-32 xl:ml-56 z-0 '>
         <Caja />
         <MesaList clientes={clientes} onClienteDrop={handleClienteDrop} />

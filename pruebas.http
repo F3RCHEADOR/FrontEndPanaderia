@@ -289,3 +289,9 @@ GET http://localhost:5000/api/pisos/local/6734d403de026b16e6cdf110
 
 ###
 GET http://localhost:5000/api/mesas/local/6734d403de026b16e6cdf110
+
+###
+DELETE http://localhost:5000/api/categorias/673613f9c0d74d95a4079c73
+
+###
+GET http://localhost:5000/api/usuarios/local/6734d403de026b16e6cdf110

@@ -178,13 +178,7 @@ const MesaList = () => {
           <h2 className="text-lg md:text-2xl font-bold text-center">
             Lista de Mesas
           </h2>
-          <p
-            className={`${
-              tipoCaja === "Cerrada" ? "bg-red-200" : "bg-blue-200"
-            } p-0.5 rounded-full font-bold italic`}
-          >
-            Caja {tipoCaja}
-          </p>
+          
         </div>
         <Reloj />
       </div>
@@ -195,7 +189,7 @@ const MesaList = () => {
             onClick={() =>
               setSelectedPiso(piso._id === selectedPiso ? null : piso._id)
             }
-            className={`py-2 px-2 md:px-4 rounded-lg transition-all duration-300 ${
+            className={`p-1 md:px-4 rounded-lg transition-all transform text-sm font-semibold italic ${
               selectedPiso === piso._id
                 ? "bg-green-500 text-white shadow-lg"
                 : "bg-gray-300 text-gray-800 hover:bg-green-400"
@@ -206,7 +200,7 @@ const MesaList = () => {
         ))}
         <button
           onClick={() => setSelectedPiso(null)}
-          className={`py-2 px-4 rounded-lg transition-all duration-300 ${
+          className={`p-1 md:px-4 rounded-lg transition-all transform text-sm font-semibold italic ${
             selectedPiso === null
               ? "bg-green-500 text-white shadow-lg"
               : "bg-gray-300 text-gray-800 hover:bg-green-400"

@@ -14,6 +14,7 @@ const localId = localStorage.getItem("localId");
 const CalculatorPanel = ({ clientData }) => {
   console.log(clientData);
   const [costTotal, setCostTotal] = useState("");
+  const [initialTotal, setInitialTotal] = useState(0);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [receivedAmount, setReceivedAmount] = useState("");
   const [change, setChange] = useState("");
@@ -30,6 +31,7 @@ const CalculatorPanel = ({ clientData }) => {
         0
       );
       setCostTotal(total);
+      setInitialTotal(total);
     }
   }, [clientData]);
 
@@ -41,6 +43,14 @@ const CalculatorPanel = ({ clientData }) => {
     const total = parseFloat(costTotal) || 0;
     const received = parseFloat(receivedAmount) || 0;
     setChange(received - total);
+  };
+
+  const paidComplete = () => {
+    if (receivedAmount != costTotal) {
+      setReceivedAmount(costTotal);
+    } else {
+      setReceivedAmount(0);
+    }
   };
 
   const handleButtonClick = (value) => {
@@ -209,6 +219,16 @@ const CalculatorPanel = ({ clientData }) => {
     setShowConfirm(false);
   };
 
+  useEffect(() => {
+    if (applyDiscount && discountPercentage !== 0 && discountPercentage <= 99) {
+      const newCostTotal = initialTotal - (initialTotal * discountPercentage) / 100;
+      setCostTotal(newCostTotal);
+    } else {
+      setCostTotal(initialTotal);
+    }
+  }, [discountPercentage, applyDiscount, initialTotal]);
+  
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     if (id === "costTotal") {
@@ -221,8 +241,8 @@ const CalculatorPanel = ({ clientData }) => {
   };
 
   return (
-    <div className="grid grid-cols-3 xl:grid-cols-4 gap-4">
-      <div className="flex flex-col w-full items-center justify-center col-span-2 xl:col-span-3 mx-auto border-4">
+    <div className="grid sm:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
+      <div className="flex flex-col w-full min-h-screen items-center justify-center sm:col-span-2 xl:col-span-3 mx-auto border-4">
         <Toast ref={toastBC} />
         <Dialog
           header="Confirmación de Compra"
@@ -283,47 +303,77 @@ const CalculatorPanel = ({ clientData }) => {
             </div>
 
             {/* Checkbox de Descuento */}
-            <div className="flex items-center justify-center mx-auto m-4 gap-2">
-              <input
-                className=""
-                type="checkbox"
-                id="applyDiscount"
-                checked={applyDiscount}
-                onChange={(e) => setApplyDiscount(e.target.checked)}
-              />
-              <label htmlFor="applyDiscount" className="font-semibold text-lg">
-                Aplicar Descuento
-              </label>
+            <div className="flex items-center justify-center mx-auto m-4 gap-y-2 gap-x-8">
+              <div className="inline-flex items-center space-x-2.5">
+                {" "}
+                <input
+                  className="w-6 h-6"
+                  type="checkbox"
+                  id="paidComplete"
+                  onChange={() => paidComplete()}
+                />
+                <label htmlFor="paidComplete" className="font-semibold text-lg">
+                  Pago Completo
+                </label>
+              </div>
+              <div className="inline-flex items-center space-x-2.5">
+                <input
+                  className="w-6 h-6"
+                  type="checkbox"
+                  id="applyDiscount"
+                  checked={applyDiscount}
+                  onChange={(e) => setApplyDiscount(e.target.checked)}
+                />
+                <label
+                  htmlFor="applyDiscount"
+                  className="font-semibold text-lg"
+                >
+                  Aplicar Descuento
+                </label>
+              </div>
             </div>
           </div>
           <div className="flex flex-col space-y-2">
             {/* Monto Recibido */}
-            <div className="text-center">
-              <input
-                id="receivedAmount"
-                type="text"
-                className="w-full text-xl font-bold p-4 border-4 bg-green-100 border-green-300"
-                placeholder="Recibe"
-                value={receivedAmount}
-                onClick={() => setActiveInput("receivedAmount")}
-                onChange={handleInputChange}
-                autoComplete="OFF"
-              />
+            <div className="grid grid-cols-2 gap-6 mb-5">
+              <div>
+                <label
+                  htmlFor="receivedAmounte"
+                  className="pl-2 text-sm italic font-semibold"
+                >
+                  Recibe
+                </label>
+                <input
+                  id="receivedAmount"
+                  type="text"
+                  className="w-full text-xl font-bold p-4 border-4 bg-green-100 border-green-300"
+                  placeholder="Recibe"
+                  value={receivedAmount}
+                  onClick={() => setActiveInput("receivedAmount")}
+                  onChange={handleInputChange}
+                  autoComplete="OFF"
+                />
+              </div>
+              <div>
+                {" "}
+                <label
+                  htmlFor="change"
+                  className="pl-2 text-sm italic font-semibold"
+                >
+                  Cambio
+                </label>
+                <input
+                  id="change"
+                  type="text"
+                  className="w-full text-xl font-bold p-4 border-4 bg-red-100 border-red-300"
+                  placeholder="Cambio"
+                  value={change}
+                  readOnly
+                />
+              </div>
             </div>
 
-            {/* Monto Cambio */}
-            <div className="text-center">
-              <input
-                id="change"
-                type="text"
-                className="w-full text-xl font-bold p-4 border-4 bg-red-100 border-red-300"
-                placeholder="Cambio"
-                value={change}
-                readOnly
-              />
-            </div>
-
-            <div className="grid grid-cols-4 gap-2 mt-4 mx-auto">
+            <div className="grid grid-cols-4 gap-2 mt-6 mx-auto">
               {[9, 8, 7, 6, 5, 4, 3, 2, 1, 0, "00", "."].map((value) => (
                 <ButtonCalculator
                   key={value}
@@ -334,15 +384,15 @@ const CalculatorPanel = ({ clientData }) => {
             </div>
 
             {/* Botones de acciones */}
-            <div className="grid grid-cols-2 gap-16 my-4">
+            <div className="grid grid-cols-2 gap-16">
               <button
-                className="bg-red-400 text-white rounded-xl border-4 px-4 py-2 font-bold hover:scale-105 active:bg-red-500"
+                className="bg-red-400 text-white rounded-xl mt-4 border-4 px-4 py-2 font-bold hover:scale-105 active:bg-red-500"
                 onClick={clearInputs}
               >
                 Limpiar
               </button>
               <Button
-                className={`bg-green-500 text-white rounded-xl border-4 px-4 py-2 font-bold hover:scale-105 active:bg-green-600`}
+                className={`bg-green-500 text-white rounded-xl border-4 px-4 mt-4 py-2 font-bold hover:scale-105 active:bg-green-600`}
                 onClick={handlePurchase}
                 disabled={buttonDisabled}
                 label={"Aceptar"}
@@ -351,7 +401,7 @@ const CalculatorPanel = ({ clientData }) => {
           </div>
         </div>
       </div>
-      <div className="w-full">
+      <div className="w-full hidden sm:block">
         <InvoiceDetail
           clientData={clientData}
           recibe={receivedAmount}
