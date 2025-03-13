@@ -11,9 +11,9 @@ const InfoMesa = ({ mesa, onClose }) => {
     tipoCliente: "Mesa", // Puedes cambiar esto si deseas agregar un tipo de cliente específico
   };
 
-  console.log(mesa);
+ 
 
-  // Asegúrate de que la propiedad `productos` exista y es un array
+
   const productos = Array.isArray(mesa.productos) ? mesa.productos : [];
 
   // Calcular el valor acumulado sumando los valorTotal de los productos

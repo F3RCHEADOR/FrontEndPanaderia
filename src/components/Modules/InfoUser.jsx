@@ -27,11 +27,10 @@ const InfoUser = () => {
     );
 
     if (confirmExit) {
-      // Limpiar los datos de sesión (si lo deseas)
+     
       localStorage.removeItem("username");
       localStorage.removeItem("role");
 
-      // Redirige al login si el usuario confirma
       navigate("/login");
     }
   };
@@ -42,10 +41,9 @@ const InfoUser = () => {
   }
 
   return (
-    <section className="bg-white w-full h-full p-6 rounded-xl shadow-md border border-gray-300 max-w-xs mx-auto">
+    <section className="bg-white w-full h-full p-2 rounded-xl shadow-md border border-gray-300 max-w-xs mx-auto">
       {/* Sección de Usuario */}
       <div className="flex flex-col items-center text-center space-y-3">
-        <h2 className="text-xl font-semibold text-gray-800">{username}</h2>
         {/* Mostrar el rol solo si existe */}
         <span className="italic font-medium text-gray-600">
           {role ? `Rol: ${role}` : "Rol no disponible"}
@@ -57,7 +55,7 @@ const InfoUser = () => {
         <button
           onClick={handleLogout}
           type="button"
-          className="bg-red-500 text-white px-2 py-1 rounded-lg text-sm text-clip font-semibold flex items-center justify-center hover:bg-red-600 transition duration-200 ease-in-out"
+          className="bg-red-500 text-white px-2 py-2 rounded-full text-sm text-clip font-semibold flex items-center justify-center hover:bg-red-600 transition duration-200 ease-in-out"
         >
           <span className="">Cerrar Sesión</span>
         </button>

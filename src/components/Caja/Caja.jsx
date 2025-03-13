@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import CajaRegistradora from "../../assets/sistema/cashRegister.png";
 import Money from "../../assets/sistema/money.png";
-import Inventory from "../../assets/sistema/inventory.png";
 import Client from "../../assets/sistema/client.png";
 import Ventas from "../../assets/sistema/ventas.png";
 import { Link } from "react-router-dom";
@@ -56,7 +55,11 @@ function Caja() {
       <div className="relative flex bg-white items-center justify-center">
         <div className="relative">
           <button onClick={toggleMenu}>
-            <img src={CajaRegistradora} alt="" className="size-20" />
+            <img
+              src={CajaRegistradora}
+              alt=""
+              className="size-16 trasform transition-all hover:scale-105"
+            />
           </button>
           <span
             className={`absolute top-1/2 -left-1/2 -translate-x-1/2 sm:left-1/2 sm:translate-x-1/3 -translate-y-1/2 transform p-1 border-2 ${
@@ -71,7 +74,7 @@ function Caja() {
         <div
           className={`${
             isMenuVisible ? "block" : "hidden"
-          } absolute bg-white sm:translate-y-20 mt-36 md:mt-20 w-56 sm:w-80 border-4 rounded-xl p-2 z-20`}
+          } absolute bg-white translate-y-20 mt-36 md:mt-20 w-56 sm:w-96 border-4 rounded-xl p-2 z-20`}
         >
           <div
             className={`grid ${
@@ -88,7 +91,7 @@ function Caja() {
                 <img
                   src={Client}
                   alt="Agregar Cliente"
-                  className="size-10 xl:size-20 mx-auto"
+                  className="size-12 xl:size-16 mx-auto"
                 />
                 <span>Agregar Cliente</span>
               </Link>
@@ -107,7 +110,7 @@ function Caja() {
                 <img
                   src={Money}
                   alt="Caja"
-                  className="size-10 xl:size-20 mx-auto"
+                  className="size-12 xl:size-16 mx-auto"
                 />
                 <span>{tipoCaja} Caja</span>
               </Link>
@@ -120,7 +123,7 @@ function Caja() {
                 <img
                   src={Ventas}
                   alt="Ventas"
-                  className="size-10 xl:size-20 mx-auto"
+                  className="size-12 xl:size-16 mx-auto"
                 />
                 <span>Ventas</span>
               </Link>
